@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrustKeys Homes Search Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/tt-tsars-a-trial" rel="stylesheet">
+    <style>
+        /* Root Variables */
+        :root {
+            --light-bg-color: #F7F7F7;
+            --light-container-color: #ffffff;
+            --light-font-color: #151516;
+            --dark-bg-color: #151516;
+            --dark-container-color: #212122;
+            --dark-font-color: #ffffff;
+            --line-color: #5C5242; 
+        }
+
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Josefin Sans', sans-serif;
+            background-color: var(--light-bg-color);
+            color: var(--light-font-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Header with Logo and Navigation */
+        .header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-left: 30px;
+            margin-right: 30px;
+            transition: background-color 0.3s;
+        }
+
+        .title-container {
+            font-family: 'TT Tsars A Trial', sans-serif;
+            font-size: 36px;
+            text-align: center;
+            padding: 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .subtitle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .line {
+            flex-grow: 1;
+            height: 1px;
+            background-color: var(--line-color);
+            margin-right: 10px;
+        }
+
+        .subtitle-text {
+            font-size: 18px;
+            font-family: 'Josefin Sans', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        /* Navigation Menu */
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-menu a {
+            color: var(--light-font-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #5C5242;
+        }
+
+		/* Search Bar Section */
+		.search-bar {
+			background-color: var(--light-container-color);
+			padding: 20px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 10px; /* Added gap between elements */
+			transition: background-color 0.3s;
+		}
+
+		.search-bar input[type="text"] {
+			width: 100%;
+			max-width: 600px;
+			padding: 15px;
+			font-size: 18px;
+			border: none;
+			border-radius: 5px;
+			background-color: var(--light-bg-color);
+			color: var(--light-font-color);
+			transition: background-color 0.3s, color 0.3s;
+			margin-right: 10px;
+		}
+
+		.search-bar button {
+			padding: 15px 30px;
+			font-size: 18px;
+			background-color: #5C5242;
+			color: #ffffff;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+
+		.search-bar button:hover {
+			background-color: #474038;
+		}
+
+		/* Tabs */
+		.search-tabs {
+			display: flex;
+			gap: 10px; /* Space between tabs */
+		}
+
+		.tab-button {
+			padding: 10px 20px;
+			font-size: 16px;
+			border: none;
+			border-radius: 5px;
+			background-color: #e0e0e0;
+			color: #333;
+			cursor: pointer;
+			transition: background-color 0.3s, color 0.3s;
+		}
+
+		.tab-button:hover {
+			background-color: #d0d0d0;
+		}
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            padding: 20px;
+            flex-grow: 1;
+        }
+		
+		.dropdown {
+			position: relative;
+		}
+
+		.dropdown-button .arrow {
+			margin-left: 5px;
+			transition: transform 0.3s;
+		}
+
+		.dropdown-button.active .arrow {
+			transform: rotate(180deg);
+		}
+
+		/* Dropdown Content */
+		.dropdown-content {
+			display: none;
+			position: absolute;
+			background-color: var(--light-container-color);
+			border: 1px solid var(--line-color);
+			border-radius: 5px;
+			padding: 15px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+			top: 100%;
+			left: 0;
+			width: 200px;
+			z-index: 1000;
+		}
+
+		.dropdown-content label {
+			display: block;
+			margin-bottom: 5px;
+			font-size: 14px;
+		}
+
+		.dropdown-content input {
+			width: 100%;
+			padding: 8px;
+			margin-bottom: 10px;
+			border: 1px solid var(--line-color);
+			border-radius: 5px;
+			font-size: 14px;
+		}
+
+		.apply-button {
+			width: 100%;
+			padding: 10px;
+			background-color: #5C5242;
+			color: #ffffff;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		/* Show Dropdown on Click */
+		.show {
+			display: block;
+		}
+		
+		/* Bed/Bath Dropdown Content */
+		.beds-baths-dropdown {
+			width: 300px; /* Increased the width for bed/bath dropdown */
+		}
+
+		.bed-options, .bath-options {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			margin-bottom: 15px;
+			width: 100%; /* Adjust to full width */
+		}
+
+		.range-button {
+			padding: 10px;
+			background-color: #e0e0e0;
+			color: #333;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: background-color 0.3s, color 0.3s;
+			flex-grow: 1;
+			text-align: center;
+			min-width: 45px; /* Minimum width for each button */
+		}
+		.range-button:hover, .range-button.active {
+			background-color: #d0d0d0;
+		}
+
+        /* Map Section */
+        .map-container {
+            flex: 1;
+            margin-right: 10px;
+            background-color: var(--light-container-color);
+            border-radius: 5px;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #333;
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        /* Listings Section */
+        .listings-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .listing-item {
+            display: flex;
+            background-color: var(--light-container-color);
+            border-radius: 5px;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+
+        .listing-item img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .listing-details {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: var(--light-font-color);
+        }
+
+        .listing-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .listing-price {
+            font-size: 18px;
+        }
+		
+		.listing-facts {
+			padding: 15px;
+            font-size: 18px;
+        }
+
+		body.light-mode .listing-price {
+			color: #8C7857;
+		}
+
+		/* Dark Mode Styles */
+		body.dark-mode .listing-price {
+			color: #947F5C !important;
+		}
+		
+        /* Footer */
+        footer {
+            background-color: var(--light-container-color);
+            color: var(--light-font-color);
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+
+        .footer-links a {
+            color: var(--light-font-color);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        /* Toggle Switch Styles */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+        }
+
+        .toggle-label {
+            margin-right: 10px;
+            color: var(--light-font-color);
+            transition: color 0.3s;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #5C5242;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            background-color: var(--light-bg-color);
+            color: var(--light-font-color);
+        }
+
+        body.light-mode .header {
+            background-color: var(--light-bg-color);
+        }
+
+        body.light-mode .title-container {
+            background-color: var(--light-bg-color);
+            color: var(--light-font-color);
+        }
+
+        body.light-mode .search-bar {
+            background-color: var(--light-container-color);
+        }
+
+        body.light-mode .search-bar input[type="text"] {
+            background-color: var(--light-bg-color);
+            color: var(--light-font-color);
+        }
+
+        body.light-mode .map-container {
+            background-color: var(--light-container-color);
+        }
+
+        body.light-mode .listing-item {
+            background-color: var(--light-container-color);
+        }
+
+        body.light-mode .listing-details {
+            color: var(--light-font-color);
+        }
+
+        body.light-mode .listing-price {
+            color: var(--line-color);
+        }
+
+        body.light-mode footer {
+            background-color: var(--light-container-color);
+        }
+
+        body.light-mode .footer-links a {
+            color: var(--light-font-color);
+        }
+
+        body.light-mode .toggle-label {
+            color: var(--light-font-color);
+        }
+
+        body.light-mode .nav-menu a {
+            color: var(--light-font-color);
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: var(--dark-bg-color);
+            color: var(--dark-font-color);
+        }
+
+        body.dark-mode .header {
+            background-color: var(--dark-bg-color);
+        }
+
+        body.dark-mode .title-container {
+            background-color: var(--dark-bg-color);
+            color: var(--dark-font-color);
+        }
+
+        body.dark-mode .search-bar {
+            background-color: var(--dark-container-color);
+        }
+
+        body.dark-mode .search-bar input[type="text"] {
+            background-color: #151516;
+            color: var(--dark-font-color);
+        }
+
+        body.dark-mode .map-container {
+            background-color: var(--dark-container-color);
+        }
+
+        body.dark-mode .listing-item {
+            background-color: var(--dark-container-color);
+        }
+
+        body.dark-mode .listing-details {
+            color: var(--dark-font-color);
+        }
+
+        body.dark-mode .listing-price {
+            color: var(--line-color);
+        }
+
+        body.dark-mode footer {
+            background-color: var(--dark-container-color);
+        }
+
+        body.dark-mode .footer-links a {
+            color: var(--dark-font-color);
+        }
+
+        body.dark-mode .toggle-label {
+            color: var(--dark-font-color);
+        }
+
+        body.dark-mode .nav-menu a {
+            color: var(--dark-font-color);
+        }
+		
+		/* Dropdown Content for Dark Mode */
+		body.dark-mode .dropdown-content {
+			background-color: var(--dark-container-color);
+			border-color: var(--light-font-color);
+			color: var(--dark-font-color);
+		}
+
+		body.dark-mode .dropdown-content input {
+			background-color: var(--dark-bg-color);
+			color: var(--dark-font-color);
+			border-color: var(--line-color);
+		}
+
+		body.dark-mode .apply-button {
+			background-color: var(--line-color);
+			color: var(--dark-font-color);
+		}
+		
+		/* Home Type Dropdown */
+		.home-type-dropdown {
+			width: 200px; /* Adjust width as needed */
+			padding: 15px;
+			background-color: var(--light-container-color);
+			border: 1px solid var(--line-color);
+			color: var(--light-font-color);
+		}
+
+		.home-type-item {
+			display: flex; /* Use flexbox to align checkbox and label */
+			align-items: center; /* Center the checkbox vertically with text */
+			margin-bottom: 10px; /* Add space between items */
+			font-size: 18px; /* Adjust font size */
+			color: var(--light-font-color);
+			width: 100%; /* Ensure full width for alignment */
+		}
+
+		.home-type-item input[type="checkbox"] {
+			margin-right: 10px; /* Space between checkbox and label */
+			width: auto; /* Ensure checkboxes are not stretched */
+			vertical-align: middle; /* Align checkbox vertically */
+		}
+
+		/* Apply button styles */
+		.apply-button {
+			width: 100%;
+			padding: 10px;
+			background-color: #5C5242;
+			color: #ffffff;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+		
+		.home-type-dropdown .home-type-item {
+			font-size: 18px !important; /* Ensure font size is applied */
+		}
+		
+		.home-type-dropdown .home-type-item label {
+			font-size: 18px !important; /* Ensure font size is applied */
+		}
+		
+
+		/* Ensure checkbox checkmark color */
+		.home-type-item input[type="checkbox"]:checked {
+			accent-color: #5C5242; /* Change checkbox color for supported browsers */
+		}
+
+		/* Dark Mode Styles for Home Type Dropdown */
+		body.dark-mode .home-type-dropdown {
+			background-color: var(--dark-container-color);
+			border: 1px solid var(--dark-font-color);
+			color: var(--dark-font-color);
+		}
+
+		body.dark-mode .home-type-item {
+			color: var(--dark-font-color);
+		}
+
+		body.dark-mode .home-type-item input[type="checkbox"] {
+			background-color: var(--dark-bg-color);
+			color: var(--dark-font-color);
+			border: 1px solid var(--line-color);
+		}
+
+		body.dark-mode .apply-button {
+			background-color: var(--line-color);
+			color: var(--dark-font-color);
+		}
+    </style>
+</head>
+<body class="light-mode">
+    <header class="header">
+        <div class="title-container">
+            TRUSTKEYS
+            <div class="subtitle">
+                <span class="line"></span>
+                <span class="subtitle-text">HOMES</span>
+            </div>
+        </div>
+        <nav class="nav-menu">
+            <a href="#">Home</a>
+            <a href="#">Listings</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+	<section class="search-bar">
+		<input type="text" placeholder="Search for homes">
+		<button>Search</button>
+		<div class="dropdown">
+			<button class="dropdown-button">
+				Price <span class="arrow">&#9662;</span> <!-- Arrow icon -->
+			</button>
+			<div class="dropdown-content">
+				<label for="min-price">Min Price</label>
+				<input type="number" id="min-price" placeholder="Enter minimum price">
+				
+				<label for="max-price">Max Price</label>
+				<input type="number" id="max-price" placeholder="Enter maximum price">
+				
+				<button class="apply-button">Apply</button>
+			</div>
+		</div>
+		<div class="dropdown">
+			<button class="dropdown-button">
+				Beds/Baths <span class="arrow">&#9662;</span> <!-- Arrow icon -->
+			</button>
+		<div class="dropdown-content beds-baths-dropdown">
+            <label>Beds</label>
+            <p>Tap two numbers to select a range</p><BR>
+            <div class="bed-options">
+                <button class="range-button">Any</button>
+                <button class="range-button">Studio</button>
+                <button class="range-button">1</button>
+                <button class="range-button">2</button>
+                <button class="range-button">3</button>
+                <button class="range-button">4</button>
+                <button class="range-button">5+</button>
+            </div>
+            
+            <label>Baths</label>
+            <div class="bath-options">
+                <button class="range-button">Any</button>
+                <button class="range-button">1+</button>
+                <button class="range-button">1.5+</button>
+                <button class="range-button">2+</button>
+                <button class="range-button">2.5+</button>
+                <button class="range-button">3+</button>
+                <button class="range-button">4+</button>
+            </div>
+
+            <button class="apply-button">Apply</button>
+        </div>
+    </div>
+		<div class="dropdown">
+			<button class="dropdown-button">
+				Home Type <span class="arrow">&#9662;</span>
+			</button>
+		 <div class="dropdown-content home-type-dropdown">
+				<div class="home-type-item">
+					<input type="checkbox" id="houses" value="houses">
+					<label for="houses">Houses</label>
+				</div>
+				<div class="home-type-item">
+					<input type="checkbox" id="townhomes" value="townhomes">
+					<label for="townhomes">Townhomes</label>
+				</div>
+				<div class="home-type-item">
+					<input type="checkbox" id="multi-family" value="multi-family">
+					<label for="multi-family">Multi-Family</label>
+				</div>
+				<div class="home-type-item">
+					<input type="checkbox" id="condos" value="condos">
+					<label for="condos">Condos</label>
+				</div>
+				<button class="apply-button">Apply</button>
+			</div>
+		</div>
+    </div>
+			</div>
+		<button>More</button>
+	</section>
+
+    <div class="main-content">
+        <div class="map-container">
+            <div class="map-placeholder">Map Placeholder</div>
+        </div>
+
+        <div class="listings-container">
+            <div class="listing-item">
+                <img src="https://via.placeholder.com/150" alt="Home Image">
+                <div class="listing-details">
+                    <div class="listing-title">Beautiful Family Home</div>
+                    <div class="listing-price">$500,000</div><BR>
+					<div class="listing-fact">3 bd 3 ba 1,400 sq ft</div>
+                </div>
+            </div>
+
+            <div class="listing-item">
+                <img src="https://via.placeholder.com/150" alt="Home Image">
+                <div class="listing-details">
+                    <div class="listing-title">Modern Apartment</div>
+                    <div class="listing-price">$300,000</div><BR>
+					<div class="listing-fact">3 bd 3 ba 1,400 sq ft</div>
+                </div>
+            </div>
+
+            <div class="listing-item">
+                <img src="https://via.placeholder.com/150" alt="Home Image">
+                <div class="listing-details">
+                    <div class="listing-title">Cozy Cottage</div>
+                    <div class="listing-price">$250,000</div><BR>
+					<div class="listing-fact">3 bd 3 ba 1,400 sq ft</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+			<a href="#">About Us</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+        <div class="toggle-container">
+            <label class="toggle-label" for="darkModeToggle">Dark Mode</label>
+            <label class="switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </footer>
+
+    <script>
+        const toggleSwitch = document.getElementById('darkModeToggle');
+
+        toggleSwitch.addEventListener('change', () => {
+            document.body.classList.toggle('dark-mode', toggleSwitch.checked);
+        });
+
+		document.querySelectorAll('.dropdown-button').forEach(button => {
+    button.addEventListener('click', function (e) {
+        e.stopPropagation(); // Prevents the click from closing the dropdown
+
+        // Get the dropdown content
+        let dropdownContent = this.nextElementSibling;
+
+        // Toggle the dropdown content
+        dropdownContent.classList.toggle('show');
+        this.classList.toggle('active');
+
+        // Close other dropdowns
+        document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+            if (dropdown !== dropdownContent) {
+                dropdown.classList.remove('show');
+                dropdown.previousElementSibling.classList.remove('active');
+            }
+        });
+    });
+});
+
+// Close all dropdowns when clicking outside
+window.addEventListener('click', function (e) {
+    document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+        if (!dropdown.contains(e.target) && !dropdown.previousElementSibling.contains(e.target)) {
+            dropdown.classList.remove('show');
+            dropdown.previousElementSibling.classList.remove('active');
+        }
+    });
+});
+    </script>
+</body>
+</html>

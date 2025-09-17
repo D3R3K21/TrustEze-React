@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homebuyer Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/tt-tsars-a-trial" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<style>
+		:root {
+			--light-bg-color: #fafafa;
+			--light-container-color: #ffffff;
+			--light-font-color: #151516;
+			--light-chart-axis-color: #151516;
+			--light-chart-label-color: #151516;
+			--dark-bg-color: #151516;
+			--dark-container-color: #212122;
+			--dark-font-color: #ffffff;
+			--dark-chart-axis-color: #e0e0e0;
+			--dark-chart-label-color: #e0e0e0;
+		}
+		body {
+			font-family: 'Josefin Sans', sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: var(--light-bg-color);
+			color: var(--light-font-color);
+			transition: background-color 0.3s, color 0.3s;
+		}
+		.dark-mode {
+			background-color: var(--dark-bg-color);
+			color: var(--dark-font-color);
+		}
+		.sidebar {
+			width: 200px;
+			height: 100vh;
+			background-color: var(--light-container-color);
+			position: fixed;
+			transition: background-color 0.3s;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 20px 0;
+			box-sizing: border-box;
+			padding-bottom: 60px; /* Make space for bottom links */
+		}
+		.dark-mode .sidebar {
+			background-color: var(--dark-container-color);
+		}
+		.title-container {
+			font-family: 'TT Tsars';
+			font-size: 24px;
+			position: relative;
+			margin-bottom: 20px;
+			text-align: center;
+		}
+		.subtitle {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-top: 10px;
+		}
+		.subtitle-text {
+			font-family: 'Josefin Sans', sans-serif;
+			font-size: 16px;
+			margin-left: 5px;
+		}
+		.line {
+			display: inline-block;
+			width: 50px;
+			height: 1px;
+			background-color: var(--light-font-color);
+			margin-right: 5px;
+		}
+		.dark-mode .line {
+			background-color: var(--dark-font-color);
+		}
+		.nav-menu {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			width: 100%;
+		}
+		.nav-menu li {
+			position: relative;
+		}
+		.nav-menu > li {
+			padding: 15px;
+			text-align: left;
+			margin-left: 10px;
+		}
+		.nav-menu li a {
+			display: flex;
+			align-items: center;
+			text-decoration: none;
+			color: inherit;
+		}
+		.nav-menu li a i {
+			margin-left: 5px;
+			font-size: 12px;
+			transition: transform 0.3s;
+		}
+		.nav-menu li a:hover i {
+			transform: rotate(180deg);
+		}
+		.sub-menu {
+			display: none;
+			position: absolute;
+			left: 0;
+			top: 100%;
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			background-color: #5c5242 !important; /* Background color */
+			border: 1px solid #ddd;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			z-index: 1;
+		}
+		.sub-menu li {
+			padding: 10px 15px;
+		}
+		.sub-menu li a {
+			color: #ffffff; /* Font color */
+			text-decoration: none;
+		}
+		.sub-menu li a:hover {
+			background-color: #;
+		}
+		.account-menu:hover .sub-menu {
+			display: block;
+		}
+		.dark-mode .sub-menu {
+			background-color: var(--dark-container-color);
+			border-color: ;
+		}
+		.dark-mode .sub-menu li a {
+			color: var(--dark-font-color);
+		}
+		.dark-mode .sub-menu li a:hover {
+			background-color: ;
+		}
+		.bottom-links {
+			margin-top: auto; /* Pushes the bottom links to the bottom */
+			width: 100%;
+			padding: 10px;
+			margin-top: 150px;
+			text-align: center;
+		}
+		.bottom-link {
+			text-align: center;
+			padding: 15px;
+			background-color: var(--light-container-color);
+		}
+		.dark-mode .bottom-link {
+			background-color: var(--dark-container-color);
+		}
+		.bottom-link a {
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: #5C5242;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			text-decoration: none;
+			cursor: pointer;
+			font-weight: bold;
+		}
+		.bottom-link a:hover {
+			background-color: #4a3c34;
+		}
+		.profile-container {
+			display: flex;
+			align-items: center;
+			margin-top: 10px;
+			margin-right: 40px;
+		}
+		.profile-photo {
+			width: 50px;
+			height: 45px;
+			border-radius: 50%;
+			margin-right: 10px;
+		}
+		.welcome-message {
+			font-size: 16px;
+			font-family: 'Josefin Sans', sans-serif;
+		}
+		.content {
+			margin-left: 200px;
+			padding: 20px;
+		}
+		header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 10px 20px;
+			background-color: var(--light-container-color);
+			position: fixed;
+			width: calc(100% - 200px);
+			margin-left: 200px;
+			transition: background-color 0.3s;
+		}
+		.dark-mode header {
+			background-color: var(--dark-container-color);
+		}
+		.toggle-container {
+			display: flex;
+			align-items: center;
+		}
+		.toggle-label {
+			margin-right: 0px;
+			margin-left: 20px;
+		}
+		.switch {
+			position: relative;
+			display: inline-block;
+			width: 60px;
+			height: 34px;
+			margin-right: 50px;
+		}
+		.switch input {
+			opacity: 0;
+			width: 0;
+			height: 0;
+		}
+		.slider {
+			position: absolute;
+			cursor: pointer;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: #ccc;
+			transition: 0.4s;
+			border-radius: 34px;
+		}
+		.slider:before {
+			position: absolute;
+			content: "";
+			height: 26px;
+			width: 26px;
+			left: 4px;
+			bottom: 4px;
+			background-color: white;
+			transition: 0.4s;
+			border-radius: 50%;
+		}
+		input:checked + .slider {
+			background-color: #5C5242;
+		}
+		input:checked + .slider:before {
+			transform: translateX(26px);
+		}
+		.search-bar {
+			flex-grow: 1;
+			max-width: 400px; /* Adjust this value as needed */
+			margin-right: 20px;
+			display: relative;
+			z-index: 2;
+		}
+		.search-input {
+			width: 70%; /* Ensure the input takes the full width of the search-bar */
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			font-size: 16px;
+			transition: background-color 0.3s, color 0.3s;
+		}
+		.dark-mode .search-input {
+			background-color: #151516;
+			color: var(--dark-font-color);
+			border-color: #333;
+		}
+		.container-wrapper {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			grid-template-rows: repeat(4, auto);
+			gap: 10px;
+			margin-top: 20px;
+		}
+		.container {
+			padding: 20px;
+			background-color: var(--light-container-color);
+			border-radius: 8px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			transition: background-color 0.3s;
+		}
+		.dark-mode .container {
+			background-color: var(--dark-container-color);
+		}
+		.container-1 {
+			grid-column: 1 / span 1;
+			grid-row: 1;
+		}
+		.container-2 {
+			grid-column: 2 / span 1;
+			grid-row: 1;
+		}
+		.container-3 {
+			grid-column: 3;
+			grid-row: 1 / span 2;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 20px;
+			background-color: var(--light-container-color); /* Same as other containers */
+			color: var(--light-font-color); /* Same as other containers */
+		}
+
+		.dark-mode .container-3 {
+			background-color: var(--dark-container-color); /* Same as other containers in dark mode */
+			color: var(--dark-font-color); /* Same as other containers in dark mode */
+		}
+		.container-4-5 {
+			grid-column: 1 / span 2;
+			grid-row: 2;
+		}
+		.container-6 {
+			grid-column: 1 / span 3;
+			grid-row: 3;
+		}
+		.progress-bar {
+			position: relative;
+			height: 20px;
+			background-color: #f3f3f3;
+			border-radius: 10px;
+			overflow: hidden;
+			margin-top: 10px;
+		}
+		.progress-bar-fill {
+			height: 100%;
+			background-color: #5C5242;
+			border-radius: 10px;
+			transition: width 0.3s;
+		}
+		.progress-bar-text {
+			margin-top: 5px;
+			font-size: 14px;
+			color: var(--light-font-color);
+		}
+		.dark-mode .progress-bar {
+			background-color: #333;
+		}
+		.dark-mode .progress-bar-fill {
+			background-color: #8a7d6f;
+		}
+		.dark-mode .progress-bar-text {
+			color: var(--dark-font-color);
+		}
+		.rounded-button {
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: #5C5242;
+			color: #fff;
+			text-decoration: none;
+			border-radius: 20px; /* Rounded corners */
+			border-color: transparent;
+			font-size: 16px;
+			font-weight: bold;
+			text-align: center;
+			transition: background-color 0.3s, transform 0.3s;
+		}
+		.rounded-button:hover {
+			background-color: #4a3c34; /* Darker shade for hover effect */
+			transform: scale(1.05); /* Slightly enlarge the button on hover */
+		}
+		.breakdown-details {
+			margin-bottom: 20px;
+		}
+		.breakdown-details h3 {
+			margin: 0 0 10px;
+		}
+		.breakdown-details p {
+			margin: 5px 0;
+		}
+		.view-button {
+			background-color: #5C5242;
+			color: #fff;
+			border: none;
+			padding: 10px 15px;
+			border-radius: 20px; /* Rounded corners */
+			font-size: 14px;
+			cursor: pointer;
+			margin: 5px;
+			transition: background-color 0.3s, transform 0.3s;
+		}
+		.view-button:hover {
+			background-color: #4a3c34; /* Darker shade for hover effect */
+			transform: scale(1.05); /* Slightly enlarge the button on hover */
+		}
+		.property-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+		}
+		.property-table th,
+		.property-table td {
+			border: 1px solid #ddd;
+			padding: 8px;
+			text-align: left;
+		}
+		.property-table th {
+			background-color: #f4f4f4;
+		}
+		.property-table tr:nth-child(even) {
+			background-color: #f9f9f9;
+		}
+		.property-table a.view-link {
+			color: #5C5242;
+			text-decoration: none;
+			font-weight: bold;
+		}
+		.property-table a.view-link:hover {
+			text-decoration: underline;
+		}
+		/* General styles for dark mode */
+		.dark-mode .property-table {
+			border-color: #333;
+		}
+		.dark-mode .property-table th {
+			background-color: #212122; /* Dark background for table headers */
+			color: #e0e0e0; /* Light text color for table headers */
+		}
+		.dark-mode .property-table td {
+			background-color: #151516; /* Dark background for table cells */
+			color: #e0e0e0; /* Light text color for table cells */
+		}
+		.dark-mode .property-table tr:nth-child(even) {
+			background-color: #212122; /* Darker shade for alternating rows */
+		}
+		.dark-mode .property-table a.view-link {
+			color: #5C5242; /* Keeping link color consistent */
+		}
+		.container-3 {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 20px;
+			background-color: var(--light-container-color);
+			color: var(--light-font-color);
+		}
+		.returns-section {
+			display: flex;
+			width: 100%;
+			max-width: 800px; /* Adjust width as needed */
+			justify-content: space-between;
+			margin: 0 auto;
+		}
+		.returns-column {
+			flex: 1;
+			padding: 10px;
+			text-align: left;
+		}
+		.returns-column h3 {
+			margin-bottom: 10px;
+			font-size: 1.1em;
+		}
+		.returns-column p {
+			margin: 6px 0;
+		}
+		.title-column {
+			text-align: right;
+			padding-right: 20px;
+		}
+		.nav-menu li:hover .sub-menu {
+			display: block;
+		}
+	</style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="sidebar">
+    <div class="title-container">
+        TRUSTKEYS
+        <div class="subtitle">
+            <span class="line"></span>
+            <span class="subtitle-text">HOMES</span>
+        </div>
+    </div>
+    <ul class="nav-menu">
+        <li><a href="#dashboard">Dashboard</a></li>
+        <li class="account-menu">
+            <a href="#account">Account <i class="fas fa-caret-down"></i></a>
+            <ul class="sub-menu">
+                <li><a href="#details">Details</a></li>
+                <li><a href="#username-password">Username/Password</a></li>
+                <li><a href="#address">Address</a></li>
+                <li><a href="#bank-account">Bank Account</a></li>
+            </ul>
+        </li>
+        <li>
+			<a href="#documentation">Documentation <i class="fas fa-caret-down"></i></a>
+			<ul class="sub-menu">
+				<li><a href="#legal-documents">Legal Documents</a></li>
+				<li><a href="#mortgage-information">Mortgage Information</a></li>
+			</ul>
+		</li>
+        <li><a href="#marketplace">Marketplace</a></li>
+        <li><a href="#education">Education <i class="fas fa-caret-down"></i></a>
+			<ul class="sub-menu">
+				<li><a href="#housing-markets">Housing Markets</a></li>
+				<li><a href="#home-values">Home Values & Equity</a></li>
+				<li><a href="#home-improvements">Home Improvements</a></li>
+			</ul>
+		</li>
+        <li><a href="#help">Help <i class="fas fa-caret-down"></i></a>
+			<ul class="sub-menu">
+				<li><a href="#how-does-it-work">How Does it Work?</a></li>
+				<li><a href="#faqs">FAQ's</a></li>
+				<li><a href="#support">Support</a></li>
+			</ul>
+		</li>
+        <li><a href="#settings">Settings</a></li>
+        </ul>
+    <div class="bottom-links">
+        <div class="bottom-link">
+            <a href="#buyer-dashboard">Switch to Investor Dashboard</a>
+        </div>
+        <div class="toggle-container">
+            <label class="toggle-label" for="dark-mode-toggle">Dark Mode</label>
+            <label class="switch">
+                <input type="checkbox" id="dark-mode-toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+</div>
+    <header>
+        <input type="text" class="search-input" placeholder="Search...">
+        <div class="profile-container">
+            <img src="https://pifa.org.au/wp-content/uploads/2024/02/240219-JMelloy-for-profile-circle-transparent.png" alt="Profile Photo" class="profile-photo">
+            <div class="welcome-message">Welcome, Jimothy Chad!</div>
+        </div>
+    </header><BR><BR><BR>
+    <div class="content">
+        <h2>Welcome to the Homebuyer Dashboard</h2>
+        <p>Here you can find all the necessary information about your home, reports, and settings.</p>
+        <div class="container-wrapper">
+            <div class="container container-1">
+			<h1>$1,400</h1>
+				<p class="progress-bar-text">Due in 8 days</p><BR>
+				<button class="rounded-button">Make a Payment</button><BR>
+				</div>
+            <div class="container container-2">
+			<h1>$20,209.98</h1>
+				<p class="progress-bar-text">Estimated Equity</p></div>
+            <div class="container container-3">
+				<div class="returns-section">
+					<div class="returns-column title-column">
+						<h3>Returns</h3>
+						<p>Trust Fees</p>
+						<p>Interest</p>
+						<p>Home Sales</p>
+						<p><strong>Total</strong></p>
+					</div>
+					<div class="returns-column">
+						<h3>2019 YTD</h3>
+						<p>$101.41</p>
+						<p>$1.46</p>
+						<p>-$0.24</p>
+						<p><strong>$102.63</strong></p>
+					</div>
+					<div class="returns-column">
+						<h3>All Time</h3>
+						<p>$101.41</p>
+						<p>$1.46</p>
+						<p>-$0.24</p>
+						<p><strong>$102.63</strong></p>
+					</div>
+				</div>
+			</div>
+            <div class="container container-4-5">
+				<h2>New Listings</h2>
+				<h3>Trust shares on yoru home have been put on sale.</h3>
+				Purchasing shares in your trust will decrease your monthly payments<br><br>
+				<a href="#" class="rounded-button">Purchase New Listings</a><BR>
+			</div>
+            <div class="container container-6">
+				<h2>Breakdown</h2>
+				<p>Below is a quick overview of all your properties you currently have shares in. For a full list of properties including properties sold, please go to the archives.</p>
+				<div class="breakdown-details">
+					<h3>Estimated Portfolio Value</h3>
+					<p>Hypothetical Invest projection of $42,307 at age 52</p>
+					<p>Weekly recurring amount: 37</p>
+					<p>Top Performing | Worse Performing</p>
+					<h4>Filters</h4>
+					<button class="view-button">Remove Filters</button>
+					<button class="view-button">Cancel</button>
+					<button class="view-button">Submit</button>
+				</div>
+				<table class="property-table">
+					<thead>
+						<tr>
+							<th>Property</th>
+							<th>Region</th>
+							<th>Shares</th>
+							<th>Value Per Share</th>
+							<th>Details</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>955 N Willard</td>
+							<td>Ind</td>
+							<td>29</td>
+							<td>$1,100</td>
+							<td><a href="#" class="view-link">View</a></td>
+						</tr>
+						<tr>
+							<td>918 Hamilton Blvf</td>
+							<td>19</td>
+							<td>8</td>
+							<td>$308</td>
+							<td><a href="#" class="view-link">View</a></td>
+						</tr>
+						<tr>
+							<td>839 Sectmart Rd</td>
+							<td>16</td>
+							<td>3</td>
+							<td>$2,099</td>
+							<td><a href="#" class="view-link">View</a></td>
+						</tr>
+						<tr>
+							<td>3892 SW Whitehair Blvd. Unit #209</td>
+							<td>Santa Monica, CA</td>
+							<td>2</td>
+							<td>$490</td>
+							<td><a href="#" class="view-link">View</a></td>
+						</tr>
+						<tr>
+							<td>122 Selma Rd.</td>
+							<td>Valentino, GA</td>
+							<td>2</td>
+							<td>$490</td>
+							<td><a href="#" class="view-link">View</a></td>
+						</tr>
+					</tbody>
+				</table>
+            </div>
+        </div>
+    </div>
+<script>
+        // JavaScript for Dark Mode Toggle
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const body = document.body;
+
+        darkModeToggle.addEventListener('change', () => {
+            body.classList.toggle('dark-mode');
+        });
+
+        // Check for previously selected mode
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            body.classList.add('dark-mode');
+            darkModeToggle.checked = true;
+        } else {
+            body.classList.remove('dark-mode');
+        }
+
+        darkModeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                body.classList.add('dark-mode');
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                body.classList.remove('dark-mode');
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+    </script>
+</body>
+</html>
+

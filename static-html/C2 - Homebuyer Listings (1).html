@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrustKeys Homes Listings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/tt-tsars-a-trial" rel="stylesheet">
+    <style>
+        /* Root Variables */
+        :root {
+            --light-bg-color: #fafafa;
+            --light-container-color: #fafafa;
+            --light-font-color: #151516;
+            --dark-bg-color: #151516;
+            --dark-container-color: #212122;
+            --dark-font-color: #ffffff;
+            --line-color: #5C5242; 
+        }
+
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Josefin Sans', sans-serif;
+            background-color: var(--dark-bg-color);
+            color: var(--dark-font-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Header with Logo */
+        .header {
+            padding: 20px;
+            display: flex;
+            align-items: left;
+            justify-content: left;
+            margin-left: 30px;
+            transition: background-color 0.3s;
+        }
+
+        .title-container {
+            font-family: 'TT Tsars A Trial', sans-serif;
+            font-size: 36px;
+            color: var(--dark-font-color);
+            text-align: center;
+            background-color: var(--dark-bg-color);
+            padding: 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .subtitle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .line {
+            flex-grow: 1;
+            height: 1px;
+            background-color: var(--line-color); 
+            margin-right: 10px;
+        }
+
+        .subtitle-text {
+            font-size: 18px;
+            font-family: 'Josefin Sans', sans-serif;
+            letter-spacing: 2px;
+        }
+		
+		
+        /* Root Variables */
+        :root {
+            --light-bg-color: #fafafa;
+            --light-container-color: #fafafa;
+            --light-font-color: #151516;
+            --dark-bg-color: #151516;
+            --dark-container-color: #212122;
+            --dark-font-color: #ffffff;
+            --line-color: #5C5242 !important; /* Always #5C5242 */
+        }
+
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Josefin Sans', sans-serif;
+            background-color: var(--dark-bg-color);
+            color: var(--dark-font-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Header with Logo and Navigation */
+        .header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between; /* Space between logo and menu */
+            align-items: center;
+            margin-left: 30px;
+            margin-right: 30px; /* Add margin-right for alignment */
+            transition: background-color 0.3s;
+        }
+
+        .title-container {
+            font-family: 'TT Tsars A Trial', sans-serif;
+            font-size: 36px;
+            color: var(--dark-font-color);
+            text-align: center;
+            background-color: var(--dark-bg-color);
+            padding: 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .subtitle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .line {
+            flex-grow: 1;
+            height: 1px;
+            background-color: var(--line-color); /* Always #5C5242 */
+            margin-right: 10px;
+        }
+
+        .subtitle-text {
+            font-size: 18px;
+            font-family: 'Josefin Sans', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        /* Navigation Menu */
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-menu a {
+            color: var(--dark-font-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #5C5242; /* Highlight color */
+        }
+		
+		/* Login Button Styles */
+		.login-button {
+			padding: 15px 30px;
+			font-size: 18px;
+			background-color: #5C5242;
+			color: #ffffff !important; /* Ensure font color is always #ffffff */
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			transition: background-color 0.3s;
+		}
+
+		.login-button:hover {
+			background-color: #474038;
+		}
+		
+		/* Light Mode Styles for Navigation Menu */
+		body.light-mode .nav-menu a {
+			color: var(--light-font-color); /* Font color for light mode */
+		}
+		
+        /* Search Bar Section */
+        .search-bar {
+            background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiOMF8VgS6CMsEGPNDlzmhlysCI30pU1SBb6wpgzgnikqT2M5QL1ZnucUGnkykW-Ru16BG9rVCvof2p-eJs89W72EiEIGbjAvd4sustbVaaRzQuMvgKnr5oh5-gqfKRU0EXXflcCOCTPtNE8tEnm-maH92IEBMnYHekr-IWjqEHaKAxVSHjghkL7o3X/s1569/chasestone_house_Lake-Norman_NC.jpg'); /* Replace with your image URL */
+            background-size: cover;
+            background-position: center;
+            padding: 180px 20px;
+            text-align: left; /* Align content to the left */
+            position: relative;
+            color: var(--dark-font-color); /* Default to dark mode font color */
+        }
+		
+		.search-bar::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: rgba(21, 21, 22, 0.3); /* Overlay with 60% opacity */
+			z-index: 1;
+			pointer-events: none; /* Ensure the overlay does not interfere with interactions */
+		}
+
+        /* Dark Mode Overlay */
+        body.dark-mode .search-bar::before {
+            background-color: rgba(21, 21, 22, 0.8); /* Dark overlay */
+        }
+
+        /* Light Mode Overlay */
+        body.light-mode .search-bar::before {
+            background-color: rgba(21, 21, 22, 0.8); /* Keep dark overlay */
+        }
+
+        .search-bar-content {
+            position: relative;
+            z-index: 2;
+            max-width: 500px; /* Set a max-width to control the layout */
+            margin-left: 30px;
+        }
+
+        .search-bar h1 {
+            margin-bottom: 20px;
+        }
+
+        .search-bar input[type="text"] {
+            width: 100%; /* Make the input take full width of the container */
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--dark-bg-color); /* Default to dark mode input background */
+            color: var(--dark-font-color); /* Default to dark mode font color */
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Search Bar Button */
+        .search-bar button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #5C5242; /* Keep button color consistent */
+            color: #ffffff; /* Ensure font color is white */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 0px;
+            margin-top: 20px; /* Add margin-top to separate from input */
+            transition: background-color 0.3s;
+        }
+
+        /* Button Hover State */
+        .search-bar button:hover {
+            background-color: #474038;
+        }
+
+        /* Main Content */
+		.main-content {
+			padding: 40px 20px;
+			text-align: center;
+		}
+
+		.main-content h2 {
+			font-size: 24px;
+			color: var(--dark-font-color); /* Default to dark mode font color */
+			margin-bottom: 30px;
+			transition: color 0.3s;
+		}
+
+		/* Light Mode Styles */
+		body.light-mode .main-content h2 {
+			color: var(--light-font-color); /* Light mode font color */
+		}
+		
+        .listing-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+       .listing-item {
+			flex: 1 1 30%;
+			max-width: 300px;
+			border-radius: 5px;
+			overflow: hidden;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			background-color: var(--dark-container-color); /* Default to dark mode container color */
+			transition: box-shadow 0.3s, background-color 0.3s;
+		}
+
+		body.light-mode .listing-item {
+			background-color: var(--light-container-color); /* Light mode container color */
+		}
+        .listing-item img {
+            width: 100%;
+            height: auto;
+        }
+
+        .listing-item:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-container-color);
+            color: var(--dark-font-color);
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+
+        .footer-links a {
+            color: var(--dark-font-color);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        /* Toggle Switch Styles */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+        }
+
+        .toggle-label {
+            margin-right: 10px;
+            color: var(--dark-font-color); /* Default to dark mode font color */
+            transition: color 0.3s;
+        }
+
+        /* Light Mode Styles for Toggle Label */
+        body.light-mode .toggle-label {
+            color: var(--light-font-color); /* Light mode font color */
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #5C5242;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            background-color: var(--light-bg-color);
+            color: var(--light-font-color);
+        }
+
+        body.light-mode .header {
+            background-color: var(--light-bg-color);
+        }
+
+        body.light-mode .title-container {
+            color: var(--light-font-color);
+            background-color: var(--light-container-color);
+        }
+
+        body.light-mode footer {
+            background-color: #FFFFFF; /* Footer color in light mode */
+            color: var(--light-font-color);
+        }
+
+        body.light-mode .footer-links a {
+            color: var(--light-font-color);
+        }
+
+        /* Search Bar Section for Light Mode */
+        body.light-mode .search-bar input[type="text"] {
+            background-color: var(--light-bg-color); /* Light mode input background */
+            color: var(--light-font-color); /* Light mode font color */
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Logo -->
+    <header class="header">
+        <div class="title-container">
+            TRUSTKEYS
+            <div class="subtitle">
+                <span class="line"></span>
+                <span class="subtitle-text">HOMES</span>
+            </div>
+			 </div>
+        <!-- Navigation Menu -->
+        <nav class="nav-menu">
+            <a href="#">Home</a>
+            <a href="#">Listings</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </nav>
+        </div>
+    </header>
+
+    <!-- Search Bar -->
+    <section class="search-bar">
+        <div class="search-bar-content">
+            <h1>Find Your Home Today</h1>
+            <input type="text" placeholder="Enter an address, city, or ZIP code">
+            <button>Search</button>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <h2>Latest and Featured Properties</h2>
+        <div class="listing-container">
+            <div class="listing-item">
+                <img src="https://img-v2.gtsstatic.net/reno/imagereader.aspx?imageurl=https%3A%2F%2Fsir.azureedge.net%2F1194i215%2Ff3jwp7v9fr9zmatjqmj75emsv5i215&option=N&h=472&permitphotoenlargement=false" alt="Property 1">
+                <div class="listing-details">
+                    <h3>Property 1</h3>
+                    <p>Location: City, State</p>
+                    <p>Price: $1,000,000</p>
+                </div>
+            </div>
+            <div class="listing-item">
+                <img src="https://toptenrealestatedeals.com/wp-content/uploads/2019/06/wk_55ad5802246c2.jpg" alt="Property 2">
+                <div class="listing-details">
+                    <h3>Property 2</h3>
+                    <p>Location: City, State</p>
+                    <p>Price: $850,000</p>
+                </div>
+            </div>
+            <div class="listing-item">
+                <img src="https://www.precisioncraft.com/wp-content/uploads/2023/05/okanogan-thumb.jpg" alt="Property 3">
+                <div class="listing-details">
+                    <h3>Property 3</h3>
+                    <p>Location: City, State</p>
+                    <p>Price: $750,000</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Contact</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Privacy Policy</a>
+        </div>
+        <div class="toggle-container">
+            <span class="toggle-label">Dark Mode</span>
+            <label class="switch">
+                <input type="checkbox" id="mode-toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </footer>
+
+    <script>
+        // JavaScript for Dark Mode Toggle
+        const toggle = document.getElementById('mode-toggle');
+        const body = document.body;
+
+        toggle.addEventListener('change', () => {
+            if (toggle.checked) {
+                body.classList.add('dark-mode');
+                body.classList.remove('light-mode');
+            } else {
+                body.classList.add('light-mode');
+                body.classList.remove('dark-mode');
+            }
+        });
+
+        // Initialize based on saved preference
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-mode');
+            toggle.checked = true;
+        } else {
+            body.classList.add('light-mode');
+            toggle.checked = false;
+        }
+
+        // Save preference
+        toggle.addEventListener('change', () => {
+            localStorage.setItem('theme', toggle.checked ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>
