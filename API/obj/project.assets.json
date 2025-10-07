@@ -1811,25 +1811,24 @@
     ]
   },
   "packageFolders": {
-    "/home/derek/.nuget/packages/": {}
+    "C:\\Users\\Britni\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/mnt/c/Users/derek/Documents/Projects/TrustEze/API/TrustEze.API.csproj",
+      "projectUniqueName": "C:\\Users\\Britni\\TrustEze-React\\API\\TrustEze.API.csproj",
       "projectName": "TrustEze.API",
-      "projectPath": "/mnt/c/Users/derek/Documents/Projects/TrustEze/API/TrustEze.API.csproj",
-      "packagesPath": "/home/derek/.nuget/packages/",
-      "outputPath": "/mnt/c/Users/derek/Documents/Projects/TrustEze/API/obj/",
+      "projectPath": "C:\\Users\\Britni\\TrustEze-React\\API\\TrustEze.API.csproj",
+      "packagesPath": "C:\\Users\\Britni\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Britni\\TrustEze-React\\API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/derek/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\Britni\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "/usr/lib/dotnet/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -1847,8 +1846,7 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "9.0.100"
+      }
     },
     "frameworks": {
       "net8.0": {
@@ -1890,20 +1888,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.19, 8.0.19]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Host.linux-x64",
-            "version": "[8.0.19, 8.0.19]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.19, 8.0.19]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -1912,7 +1896,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/9.0.109/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
