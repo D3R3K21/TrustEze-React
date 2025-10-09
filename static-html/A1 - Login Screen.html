@@ -1,214 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.cdnfonts.com/css/tt-tsars-a-trial" rel="stylesheet">
-    <title>Login Page</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            text-align: left;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/tt-tsars-a-trial" rel="stylesheet">
+<title>Login Page</title>
+<style>
+    :root {
+        font-size: 16px; 
+    }
 
-        .container {
-            display: flex;
-            height: 100vh;
-        }
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        font-size: 1rem; 
+        text-align: left;
+        height: 100vh;
+    }
 
-        .left {
-            flex: 50%; /* 60% of container width */
-            position: relative;
-            overflow: hidden;
-        }
+    .container {
+        display: flex;
+        flex-direction: row;
+        height: 100%;
+        width: 100%;
+    }
 
-        .video-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1; /* Ensure video is behind other content */
-        }
+    .left {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+    }
 
-        .left::before {
-            content: "";
-            background: rgba(21, 21, 22, 0.8); 
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
+    .video-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+    }
 
-        .left-content {
-            position: absolute;
-            top: 20%;
-            left: 75%; /* Adjusted to center content */
-            transform: translateX(-50%);
-            text-align: center;
-            font-size: 12px;
-            color: #fff;
-            z-index: 1; /* Place content above video */
-        }
+    .left::before {
+        content: "";
+        background: rgba(21, 21, 22, 0.8); 
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
 
-        .right {
-            flex: 35%; 
-            background: #151516;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            color: #fff;
-        }
+    .left-content {
+        position: absolute;
+        top: 20%;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        font-size: 1rem;
+        color: #fff;
+        z-index: 1;
+    }
 
-        .login-container {
-            padding: 20px;
-            background-color: #151516;
-            border-radius: 10px;
-            text-align: center;
-            width: 250px;
-            height: auto;
-            z-index: 2;
-            top: 10%;
-        }
+    .right {
+        flex: 0.5;
+        background: #151516;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        padding: 1rem;
+    }
 
-        .login-logo {
-            font-family: 'TT Tsars';
-            font-size: 35px;
-			font-weight: 200;
-            position: relative;
-            margin-bottom: 20px; 
-            text-align: center; 
-        }
-        .subtitle {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 10px; /* Space above the subtitle */
-        }
-        .subtitle-text {
-            font-family: 'Josefin Sans', sans-serif; /* Font for the subtitle */
-            font-size: 23px; /* Adjust size as needed */
-            margin-left: 5px; /* Space between line and subtitle text */
-			font-weight: 200;
-        }
-		.line {
-			background-color: #5C5242; /* Set the line color */
-			display: inline-block;
-			width: 90px; /* Adjust width as needed */
-			height: 2px;
-			margin-right: 5px; /* Space between the solid line and the text */
-		}
-        .login-input {
-            width: 80%;
-            padding: 10px;
-            color: #fff;
-            background-color: #212122;
-            margin: 10px 0;
-            border: 1px solid #151516;
-            border-radius: 5px;
-        }
+    .login-container {
+        width: 100%;
+        max-width: 22rem; 
+        padding: 1.25rem;
+        background-color: #151516;
+        border-radius: 0.625rem; 
+        text-align: center;
+        z-index: 2;
+    }
 
-        .login-input::placeholder {
-            color: #fff; 
-        }
+    .login-logo {
+        font-family: 'TT Tsars';
+        font-size: 2.1875rem; 
+        font-weight: 200;
+        margin-bottom: 1.25rem;
+        text-align: center;
+    }
 
-        .login-button {
-            padding: 10px 20px;
-            background-color: #5C5242;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    .subtitle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 0.625rem;
+    }
 
-        .forgot-link {
-            font-size: 14px;
-            text-decoration: underline;
-            color: #fff;
-            cursor: pointer;
-        }
+    .subtitle-text {
+        font-family: 'Josefin Sans', sans-serif;
+        font-size: 1.4375rem;
+        margin-left: 0.3125rem;
+        font-weight: 200;
+    }
 
-        .disclaimer {
-            font-size: 12px;
-            text-align: center;
-            color: #6d6d6e;
-            padding: 10px;
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1;
-        }
+    .line {
+        background-color: #5C5242;
+        display: inline-block;
+        width: 5.625rem; 
+        height: 0.125rem; 
+        margin-right: 0.3125rem;
+    }
 
-        .social-media-section {
-            text-align: center;
-            margin-top: 20px; 
-        }
+    .login-input {
+        width: 100%;
+        padding: 0.625rem; 
+        margin: 0.625rem 0;
+        color: #fff;
+        background-color: #212122;
+        border: 0.0625rem solid #151516; 
+        border-radius: 0.3125rem; 
+        font-size: 1rem;
+        box-sizing: border-box;
+    }
 
-        .social-media-icon {
-            display: inline-block;
-            margin: 0 10px; 
-        }
+    .login-input::placeholder {
+        color: #fff;
+    }
 
-        .overlay-bar {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: ;
-            text-align: center;
-            padding: 10px 0;
-        }
+    .login-button {
+        padding: 0.625rem 1.25rem;
+        background-color: #5C5242;
+        color: #fff;
+        border: none;
+        border-radius: 0.3125rem;
+        cursor: pointer;
+        font-size: 1rem;
+    }
 
-        .overlay-text {
-            margin: 0;
-            font-size: 12px;
-            color: #6d6d6e;
-            text-align: left;
-            padding: 5px 40px; 
-        }
+    .forgot-links-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap; 
+        margin-top: 0.625rem;
+        gap: 0.3125rem;
+        font-size: 0.875rem;
+        white-space: nowrap;
+    }
 
-        a {
-            text-decoration: none;
-            color: #6d6d6e;
-        }
-		
-		
-        .gold-text {
-            color: #8F7C5C;
-			font-size: 20px;
-			font-family: Josefin Sans, sans-serif;
-			font-weight: 500;
-        }
+    .forgot-link {
+        flex-shrink: 0;
+        text-decoration: underline;
+        color: #fff;
+        cursor: pointer;
+    }
 
-        .moved-up {
-            margin-top: -10px;
-        }
-    </style>
+    .forgot-separator {
+        font-weight: bold;
+        color: #36444C;
+    }
+
+    .disclaimer {
+        font-size: 0.75rem; 
+        text-align: center;
+        color: #6d6d6e;
+        margin-top: 1.25rem;
+    }
+
+    .overlay-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        padding: 0.625rem 0;
+    }
+
+    .overlay-text {
+        margin: 0;
+        font-size: 0.75rem;
+        color: #6d6d6e;
+        text-align: left;
+        padding: 0.3125rem 2.5rem;
+    }
+
+    a {
+        text-decoration: none;
+        color: #6d6d6e;
+    }
+
+</style>
 </head>
 <body>
     <div class="container">
         <div class="left">
             <video class="video-background" autoplay muted loop>
                 <source src="http://trusteze.co/wp-content/uploads/2024/07/1437396-uhd_2560_1440_24fps.mp4" type="video/mp4">
-                <!-- Include other video formats if needed -->
                 Your browser does not support the video tag.
             </video>
             <div class="left-content">
-                <!-- Content for left side -->
+                <!-- Left side content -->
             </div>
             <div class="overlay-bar">
                 <p class="overlay-text">
-                    <a href="https://apc.freelandsystems.net/Home/About" style="text-decoration: none; color: #6d6d6e;" target="_blank">
-                        © Copyright, TrustKey Homes LLC, 2024. All rights reserved.&nbsp;|&nbsp;Version: 2.0.2.130
+                    <a href="https://trusteze.co/" target="_blank">
+                        © Copyright, TrustKey Homes LLC, 2024. All rights reserved. | Version: 2.0.2.130
                     </a>
                 </p>
             </div>
@@ -216,40 +216,33 @@
         <div class="right">
             <div class="login-container">
                 <div class="login-logo">
-				TRUSTKEYS
-            <div class="subtitle">
-                <span class="line"></span>
-                <span class="subtitle-text">HOMES</span>
-            </div>
+                    TRUSTKEYS
+                    <div class="subtitle">
+                        <span class="line"></span>
+                        <span class="subtitle-text">HOMES</span>
+                    </div>
                 </div>
                 <form id="login-form">
-                    <div>
-                        <input type="text" placeholder="Username" class="login-input" style="color: #fff;">
-                    </div>
-                    <div>
-                        <input type="password" placeholder="Password" class="login-input" style="color: #fff;">
-                    </div>
-                    <br>
-                    <button type="submit" class="login-button">Login</button><br><br>
+                    <input type="text" placeholder="Username" class="login-input">
+                    <input type="password" placeholder="Password" class="login-input">
+                    <button type="submit" class="login-button">Login</button>
                 </form>
-                <div>
+                <div class="forgot-links-container">
                     <a href="#forgot-username" class="forgot-link">Forgot Username</a>
-                    <span style="color: #36444C; font-size: 20px; font-weight: bold;">&nbsp;|&nbsp;</span>
+                    <span class="forgot-separator">|</span>
                     <a href="#forgot-password" class="forgot-link">Forgot Password</a>
                 </div>
-                <div class="social-media-section">
-                    <div class="disclaimer">
-                        <p style="color: #6d6d6e">Password/Login sharing is strictly prohibited. This system is monitored and reviewed for improper access or inappropriate use of client information.</p>
-                    </div>
+                <div class="disclaimer">
+                    Tessword/Login sharing is strictly prohibited. This system is monitored and reviewed for improper access or inappropriate use of client information.
                 </div>
             </div>
         </div>
     </div>
-    <script>
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Login button clicked');
-        });
-    </script>
+<script>
+document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('Login button clicked');
+});
+</script>
 </body>
 </html>
