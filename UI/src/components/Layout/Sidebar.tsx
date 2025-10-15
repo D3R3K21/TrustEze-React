@@ -19,7 +19,7 @@ const Sidebar: React.FC = () => {
 
   const navigationItems = [
     { 
-      path: '/', 
+      path: '/homebuyer', 
       label: 'Dashboard', 
       hasDropdown: false 
     },
@@ -124,7 +124,7 @@ const Sidebar: React.FC = () => {
 
       <div className="bottom-links">
         <div className="bottom-link">
-          <Link to="/investor-dashboard" className="switch-dashboard-btn">
+          <Link to="/investor" className="switch-dashboard-btn">
             Switch to Investor Dashboard
           </Link>
         </div>

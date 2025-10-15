@@ -26,16 +26,16 @@ const Header: React.FC = () => {
         onChange={(e) => setSearchQuery(e.target.value)}
       />
       
-      {isAuthenticated && user && (
+      {/* {isAuthenticated && user && ( */}
         <div className="profile-container">
           <img 
             src="https://pifa.org.au/wp-content/uploads/2024/02/240219-JMelloy-for-profile-circle-transparent.png" 
             alt="Profile Photo" 
             className="profile-photo"
           />
-          <div className="welcome-message">Welcome, {user.name}!</div>
+          <div className="welcome-message">Welcome, {"Jimothy Chad"}!</div>
         </div>
-      )}
+      {/* )} */}
     </header>
   );
 };

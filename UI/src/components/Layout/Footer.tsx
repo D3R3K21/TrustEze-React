@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
       <div className="footer-container">
         <div className="footer-content">
           <div className="footer-section">
-            <h3>TrustKeys</h3>
+            <h3>TrustEze</h3>
             <p>Your trusted partner in finding the perfect home. We make the home buying process simple, transparent, and secure.</p>
           </div>
           
@@ -23,7 +23,7 @@ const Footer: React.FC = () => {
           
           <div className="footer-section">
             <h4>Contact Info</h4>
-            <p>📧 info@TrustKeys.com</p>
+            <p>📧 info@trusteze.com</p>
             <p>📞 (555) 123-4567</p>
             <p>📍 123 Real Estate Ave, City, State 12345</p>
           </div>

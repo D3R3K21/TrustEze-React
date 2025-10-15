@@ -26,7 +26,7 @@ const Navbar: React.FC = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
-          
+          TrustEze
         </Link>
         
         <div className={`navbar-menu ${isMobileMenuOpen ? 'active' : ''}`}>
