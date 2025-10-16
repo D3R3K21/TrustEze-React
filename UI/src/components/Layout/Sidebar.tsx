@@ -128,7 +128,6 @@ const Sidebar: React.FC = () => {
             Switch to Investor Dashboard
           </Link>
         </div>
-        
         <div className="toggle-container">
           <label className="toggle-label" htmlFor="dark-mode-toggle">Dark Mode</label>
           <label className="switch">

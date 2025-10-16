@@ -1,8 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Button from '../components/CommonComponents/Button';
 import './Temp.css';
 
 const Temp: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleHomebuyerClick = () => {
+    navigate('/homebuyer');
+  };
+
+  const handleInvestorClick = () => {
+    navigate('/investor');
+  };
+
   return (
     <div className="temp-container">
       <div className="temp-content">
@@ -10,13 +21,19 @@ const Temp: React.FC = () => {
         <p>Choose your dashboard to get started</p>
         
         <div className="dashboard-buttons">
-          <Link to="/homebuyer" className="dashboard-button">
-            Homebuyer Dashboard
-          </Link>
+          <Button 
+            name="Homebuyer Dashboard" 
+            size="big" 
+            shape="square"
+            onClick={handleHomebuyerClick}
+          />
           
-          <Link to="/investor" className="dashboard-button">
-            Investor Dashboard
-          </Link>
+          <Button 
+            name="Investor Dashboard" 
+            size="big" 
+            shape="square"
+            onClick={handleInvestorClick}
+          />
         </div>
       </div>
     </div>
