@@ -9,7 +9,7 @@ namespace TrustEze.API.Services
 
         public MongoDbService(IConfiguration configuration)
         {
-      var connectionString = "mongodb://localhost:27017";// configuration.GetConnectionString("MongoDB") ?? "mongodb://172.20.240.1:27017";
+            var connectionString = configuration.GetConnectionString("MongoDB");
             var databaseName = configuration["MongoDB:DatabaseName"] ?? "TrustEzeDb";
             
             var client = new MongoClient(connectionString);
