@@ -23,3 +23,4 @@ namespace TrustEze.API.Services
         public IMongoCollection<PropertyView> PropertyViews => _database.GetCollection<PropertyView>("propertyViews");
     }
 }
+

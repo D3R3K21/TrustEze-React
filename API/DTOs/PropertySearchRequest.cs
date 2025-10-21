@@ -17,3 +17,4 @@ namespace TrustEze.API.DTOs
         public string SortBy { get; set; } = "newest"; // newest, oldest, price-asc, price-desc
     }
 }
+
