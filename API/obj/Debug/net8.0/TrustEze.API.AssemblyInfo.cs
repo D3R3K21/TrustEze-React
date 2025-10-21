@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TrustEze.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+536a6b40c0057398a402a442dc2481e0322783a6")]
 [assembly: System.Reflection.AssemblyProductAttribute("TrustEze.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TrustEze.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

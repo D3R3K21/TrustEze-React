@@ -28,10 +28,10 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 # Set environment variables for MongoDB connection
-ENV MongoDB__ConnectionString="mongodb://mongo:27017"
-ENV MongoDB__DatabaseName="TrustEze"
-ENV Jwt__Key="c174b8980ac99393a1b064e5cf9c3cae"
-ENV Jwt__Issuer="TrustEze"
-ENV Jwt__Audience="TrustEzeUsers"
+ENV MongoConnectionString="mongodb://mongo:27017"
+ENV MongoDatabase="TrustEze"
+ENV JwtKey="c174b8980ac99393a1b064e5cf9c3cae"
+ENV JwtIssuer="TrustEze"
+ENV JwtAudience="TrustEzeUsers"
 
 ENTRYPOINT ["dotnet", "TrustEze.API.dll"]

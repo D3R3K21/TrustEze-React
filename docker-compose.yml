@@ -31,11 +31,12 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
-      - MongoDB__ConnectionString=mongodb://mongo:27017
-      - MongoDB__DatabaseName=TrustEze
-      - Jwt__Key=c174b8980ac99393a1b064e5cf9c3cae
-      - Jwt__Issuer=TrustEze
-      - Jwt__Audience=TrustEzeUsers
+      - MongoConnectionString=mongodb://admin:password123@mongo:27017
+      - MongoDatabase=TrustEze
+      - ENABLE_SEED_DATA=true
+      - JwtKey=c174b8980ac99393a1b064e5cf9c3cae
+      - JwtIssuer=TrustEze
+      - JwtAudience=TrustEzeUsers
     depends_on:
       - mongo
     networks:
