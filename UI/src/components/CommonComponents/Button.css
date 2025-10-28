@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Button Base Styles */
+.button {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  color: #FFFFFF;
+  background-color: #8B7355;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  user-select: none;
+}
+
+.button:hover:not(.button--disabled) {
+  background-color: #6B5A42;
+}
+
+.button:focus {
+  box-shadow: 0 0 0 2px rgba(139, 115, 85, 0.3);
+}
+
+.button--disabled {
+  background-color: #4A4A4A;
+  color: #808080;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Size Variants */
+.button--small {
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  min-height: 32px;
+}
+
+.button--med {
+  padding: 12px 24px;
+  font-size: 0.875rem;
+  min-height: 40px;
+}
+
+.button--big {
+  padding: 16px 32px;
+  font-size: 1rem;
+  min-height: 48px;
+}
+
+/* Shape Variants */
+.button--square {
+  border-radius: 8px;
+}
+
+.button--round {
+  border-radius: 24px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .button--small {
+    padding: 6px 12px;
+    font-size: 0.7rem;
+    min-height: 28px;
+  }
+  
+  .button--med {
+    padding: 10px 20px;
+    font-size: 0.8rem;
+    min-height: 36px;
+  }
+  
+  .button--big {
+    padding: 14px 28px;
+    font-size: 0.9rem;
+    min-height: 44px;
+  }
+}

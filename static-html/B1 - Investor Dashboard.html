@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investor Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/tt-tsars-a-trial" rel="stylesheet">
+    <style>
+        /* Your existing CSS */
+        :root {
+            --light-bg-color: #fafafa;
+            --light-container-color: #ffffff;
+            --light-font-color: #151516;
+            --light-chart-axis-color: #151516;
+			--light-chart-label-color: #151516;
+            --dark-bg-color: #151516;
+            --dark-container-color: #212122;
+            --dark-font-color: #ffffff;
+            --dark-chart-axis-color: #e0e0e0;
+            --dark-chart-label-color: #e0e0e0;
+        }
+        body {
+            font-family: 'Josefin Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg-color);
+            color: var(--light-font-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .dark-mode {
+            background-color: var(--dark-bg-color);
+            color: var(--dark-font-color);
+        }
+        .sidebar {
+            width: 200px;
+            height: 100vh;
+            background-color: var(--light-container-color);
+            position: fixed;
+            transition: background-color 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            box-sizing: border-box;
+        }
+        .dark-mode .sidebar {
+            background-color: var(--dark-container-color);
+        }
+        .title-container {
+            font-family: 'TT Tsars';
+            font-size: 24px;
+            position: relative;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .subtitle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .subtitle-text {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 16px;
+            margin-left: 5px;
+        }
+        .line {
+            display: inline-block;
+            width: 50px;
+            height: 1px;
+            background-color: var(--light-font-color);
+            margin-right: 5px;
+        }
+        .dark-mode .line {
+            background-color: var(--dark-font-color);
+        }
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            flex-grow: 1;
+        }
+        .nav-menu li {
+            padding: 15px;
+            text-align: left;
+			margin-left: 10px;
+        }
+        .nav-menu li a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .bottom-link {
+            text-align: center;
+            padding: 15px;
+            background-color: var(--light-container-color);
+        }
+        .dark-mode .bottom-link {
+            background-color: var(--dark-container-color);
+        }
+        .bottom-link a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #5C5242;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .bottom-link a:hover {
+            background-color: #4a3c34;
+        }
+        .profile-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            margin-right: 40px;
+        }
+        .profile-photo {
+            width: 50px;
+            height: 45px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .welcome-message {
+            font-size: 16px;
+            font-family: 'Josefin Sans', sans-serif;
+        }
+        .content {
+            margin-left: 200px;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: var(--light-container-color);
+            position: fixed;
+            width: calc(100% - 200px);
+            margin-left: 200px;
+            transition: background-color 0.3s;
+        }
+        .dark-mode header {
+            background-color: var(--dark-container-color);
+        }
+        .toggle-container {
+            display: flex;
+            align-items: center;
+        }
+        .toggle-label {
+            margin-right: 0px;
+            margin-left: 20px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-right: 50px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #5C5242;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .search-bar {
+			flex-grow: 1;
+			max-width: 400px; /* Adjust this value as needed */
+			margin-right: 20px;
+			display: relative;
+			z-index: 2;
+		}
+
+		.search-input {
+			width: 70%; /* Ensure the input takes the full width of the search-bar */
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			font-size: 16px;
+			transition: background-color 0.3s, color 0.3s;
+		}
+        .dark-mode .search-input {
+            background-color: #151516;
+            color: var(--dark-font-color);
+            border-color: #333;
+        }
+        .container-wrapper {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(4, auto);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .container {
+            padding: 20px;
+            background-color: var(--light-container-color);
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+        .dark-mode .container {
+            background-color: var(--dark-container-color);
+        }
+        .container-1 {
+            grid-column: 1 / span 1;
+            grid-row: 1;
+        }
+        .container-2 {
+            grid-column: 2 / span 1;
+            grid-row: 1;
+        }
+        .container-3 {
+            grid-column: 3;
+            grid-row: 1 / span 2;
+        }
+        .container-4-5 {
+            grid-column: 1 / span 2;
+            grid-row: 2;
+        }
+        .container-6 {
+            grid-column: 1 / span 3;
+            grid-row: 3;
+        }
+        .container-7 {
+            grid-column: 1 / span 1;
+            grid-row: 4;
+            height: 300px; /* Adjust as needed */
+        }
+        .container-8 {
+            grid-column: 2 / span 2;
+            grid-row: 4;
+            height: 300px; /* Adjust as needed */
+        }
+		.progress-bar {
+			position: relative;
+			height: 20px;
+			background-color: #f3f3f3;
+			border-radius: 10px;
+			overflow: hidden;
+			margin-top: 10px;
+		}
+
+		.progress-bar-fill {
+			height: 100%;
+			background-color: #5C5242;
+			border-radius: 10px;
+			transition: width 0.3s;
+		}
+
+		.progress-bar-text {
+			margin-top: 5px;
+			font-size: 14px;
+			color: var(--light-font-color);
+		}
+		.dark-mode .progress-bar {
+			background-color: #333;
+		}
+
+		.dark-mode .progress-bar-fill {
+			background-color: #8a7d6f;
+		}
+
+		.dark-mode .progress-bar-text {
+			color: var(--dark-font-color);
+		}
+		.rounded-button {
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: #5C5242;
+			color: #fff;
+			text-decoration: none;
+			border-radius: 20px; /* Rounded corners */
+			font-size: 16px;
+			font-weight: bold;
+			text-align: center;
+			transition: background-color 0.3s, transform 0.3s;
+		}
+		.breakdown-details {
+				margin-bottom: 20px;
+			}
+
+		.breakdown-details h3 {
+				margin: 0 0 10px;
+			}
+
+		.breakdown-details p {
+				margin: 5px 0;
+			}
+
+		.view-button {
+				background-color: #5C5242;
+				color: #fff;
+				border: none;
+				padding: 10px 15px;
+				border-radius: 20px; /* Rounded corners */
+				font-size: 14px;
+				cursor: pointer;
+				margin: 5px;
+				transition: background-color 0.3s, transform 0.3s;
+			}
+
+		.view-button:hover {
+				background-color: #4a3c34; /* Darker shade for hover effect */
+				transform: scale(1.05); /* Slightly enlarge the button on hover */
+			}
+
+		.property-table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-top: 20px;
+			}
+
+		.property-table th,
+		.property-table td {
+				border: 1px solid #ddd;
+				padding: 8px;
+				text-align: left;
+			}
+
+		.property-table th {
+				background-color: #f4f4f4;
+			}
+
+		.property-table tr:nth-child(even) {
+				background-color: #f9f9f9;
+			}
+
+		.property-table a.view-link {
+				color: #5C5242;
+				text-decoration: none;
+				font-weight: bold;
+			}
+
+		.property-table a.view-link:hover {
+				text-decoration: underline;
+			}
+			/* General styles for dark mode */
+		.dark-mode .property-table {
+				border-color: #333;
+			}
+
+		.dark-mode .property-table th {
+				background-color: #212122; /* Dark background for table headers */
+				color: #e0e0e0; /* Light text color for table headers */
+			}
+
+		.dark-mode .property-table td {
+				background-color: #151516; /* Dark background for table cells */
+				color: #e0e0e0; /* Light text color for table cells */
+			}
+
+		.dark-mode .property-table tr:nth-child(even) {
+				background-color: #212122; /* Darker shade for alternating rows */
+			}
+
+		.dark-mode .property-table a.view-link {
+				color: #5C5242; /* Keeping link color consistent */
+			}
+
+			/* Ensure that other styles are kept for light mode */
+		.property-table th,
+		.property-table td {
+				border: 1px solid #ddd;
+				padding: 8px;
+				text-align: left;
+			}
+
+		.property-table th {
+				background-color: #f4f4f4;
+			}
+
+		.property-table tr:nth-child(even) {
+				background-color: #f9f9f9;
+			}
+
+		.property-table a.view-link {
+				color: #5C5242;
+				text-decoration: none;
+				font-weight: bold;
+			}
+
+		.property-table a.view-link:hover {
+				text-decoration: underline;
+			}
+		
+		.container-3 {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 20px;
+			background-color: var(--container-bg-color);
+			color: var(--font-color);
+		}
+
+		.returns-section {
+			display: flex;
+			width: 100%;
+			max-width: 800px; /* Adjust width as needed */
+			justify-content: space-between;
+			margin: 0 auto;
+		}
+
+		.returns-column {
+			flex: 1;
+			padding: 10px;
+			text-align: left;
+		}
+
+		.returns-column h3 {
+			margin-bottom: 10px;
+			font-size: 1.1em;
+		}
+
+		.returns-column p {
+			margin: 6px 0;
+		}
+
+		.title-column {
+			text-align: right;
+			padding-right: 20px;
+		}
+			</style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="title-container">
+            TRUSTKEYS
+            <div class="subtitle">
+                <span class="line"></span>
+                <span class="subtitle-text">HOMES</span>
+            </div>
+        </div>
+         <ul class="nav-menu">
+            <li><a href="#dashboard">Dashboard</a></li>
+            <li><a href="#investments">Investments</a></li>
+            <li><a href="#reports">Reports</a></li>
+            <li><a href="#settings">Settings</a></li>
+        </ul>
+        <div class="bottom-link">
+            <a href="#buyer-dashboard">Switch to Buyer Dashboard</a>
+        </div>
+        <div class="toggle-container">
+            <label class="toggle-label" for="dark-mode-toggle">Dark Mode</label>
+            <label class="switch">
+                <input type="checkbox" id="dark-mode-toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+    <header>
+        <input type="text" class="search-input" placeholder="Search...">
+        <div class="profile-container">
+            <img src="https://pifa.org.au/wp-content/uploads/2024/02/240219-JMelloy-for-profile-circle-transparent.png" alt="Profile Photo" class="profile-photo">
+            <div class="welcome-message">Welcome, Jimothy Chad!</div>
+        </div>
+    </header><BR><BR><BR>
+    <div class="content">
+        <h2>Welcome to the Investor Dashboard</h2>
+        <p>Here you can find all the necessary information about your investments, reports, and settings.</p>
+        <div class="container-wrapper">
+            <div class="container container-1">
+			<h1>$270,400</h1>
+				<div class="progress-bar">
+					<div class="progress-bar-fill" style="width: 75%;"></div>
+				</div>
+				<p class="progress-bar-text">Estimated Portfolio Value</p></div>
+            <div class="container container-2">
+			<h1>$20,209.98</h1>
+				<p class="progress-bar-text">Account Balance</p></div>
+            <div class="container container-3">
+				<div class="returns-section">
+					<div class="returns-column title-column">
+						<h3>Returns</h3>
+						<p>Trust Fees</p>
+						<p>Interest</p>
+						<p>Home Sales</p>
+						<p><strong>Total</strong></p>
+					</div>
+					<div class="returns-column">
+						<h3>2019 YTD</h3>
+						<p>$101.41</p>
+						<p>$1.46</p>
+						<p>-$0.24</p>
+						<p><strong>$102.63</strong></p>
+					</div>
+					<div class="returns-column">
+						<h3>All Time</h3>
+						<p>$101.41</p>
+						<p>$1.46</p>
+						<p>-$0.24</p>
+						<p><strong>$102.63</strong></p>
+					</div>
+				</div>
+			</div>
+            <div class="container container-4-5">
+				<h2>New Listings</h2>
+				<h3>Own another property for as low as $5,000 per share.</h3>
+				New homes are being added on a regular basis.<br><br>
+				<a href="#" class="rounded-button">Browse New Listings</a><BR>
+			</div>
+            <div class="container container-6">
+				<h2>Breakdown</h2>
+				<p>Below is a quick overview of all your properties you currently have shares in. For a full list of properties including properties sold, please go to the archives.</p>
+				<div class="breakdown-details">
+					<h3>Estimated Portfolio Value</h3>
+					<p>Hypothetical Invest projection of $42,307 at age 52</p>
+					<p>Weekly recurring amount: 37</p>
+					<p>Top Performing | Worse Performing</p>
+					<h4>Filters</h4>
+					<button class="view-button">Remove Filters</button>
+					<button class="view-button">Cancel</button>
+					<button class="view-button">Submit</button>
+				</div>
+				<table class="property-table">
+					<thead>
+						<tr>
+							<th>Property</th>
+							<th>Region</th>
+							<th>Shares</th>
+							<th>Value Per Share</th>
+							<th>Details</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>955 N Willard</td>
+							<td>Ind</td>
+							<td>29</td>
+							<td>$1,100</td>
+							<td><a href="#" class="view-link">View</a></td>
+						</tr>
+						<tr>
+							<td>918 Hamilton Blvf</td>
+							<td>19</td>
+							<td>8</td>
+							<td>$308</td>
+							<td><a href="#" class="view-link">View</a></td>
+						</tr>
+						<tr>
+							<td>839 Sectmart Rd</td>
+							<td>16</td>
+							<td>3</td>
+							<td>$2,099</td>
+							<td><a href="#" class="view-link">View</a></td>
+						</tr>
+						<tr>
+							<td>3892 SW Whitehair Blvd. Unit #209</td>
+							<td>Santa Monica, CA</td>
+							<td>2</td>
+							<td>$490</td>
+							<td><a href="#" class="view-link">View</a></td>
+						</tr>
+						<tr>
+							<td>122 Selma Rd.</td>
+							<td>Valentino, GA</td>
+							<td>2</td>
+							<td>$490</td>
+							<td><a href="#" class="view-link">View</a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+            <div class="container container-7">
+                <canvas id="stackedBarChart"></canvas>
+            </div>
+            <div class="container container-8">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <script>
+    // Function to update chart colors based on dark mode
+    function updateChartColors(chart) {
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        const xAxisColor = getComputedStyle(document.documentElement).getPropertyValue(isDarkMode ? '--dark-chart-axis-color' : '--light-chart-axis-color').trim();
+        const yAxisColor = getComputedStyle(document.documentElement).getPropertyValue(isDarkMode ? '--dark-chart-axis-color' : '--light-chart-axis-color').trim();
+        const labelColor = getComputedStyle(document.documentElement).getPropertyValue(isDarkMode ? '--dark-chart-label-color' : '--light-chart-label-color').trim();
+        
+        chart.options.scales.x.ticks.color = xAxisColor;
+        chart.options.scales.y.ticks.color = yAxisColor;
+        chart.options.scales.y.grid.color = yAxisColor; // Update y-axis grid line color
+        chart.options.plugins.legend.labels.color = labelColor;
+        chart.update();
+    }
+
+    const ctx = document.getElementById('lineChart').getContext('2d');
+    const lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Year 6', 'Year 7', 'Year 8', 'Year 9', 'Year 10'],
+            datasets: [{
+                label: '20-Year Outlook',
+                data: [105000, 115000, 110000, 105000, 108000, 110000, 130000, 125000, 130000, 140000],
+                borderColor: '#5C5242',
+                backgroundColor: 'rgba(92, 82, 66, 0.2)',
+                fill: true,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--light-chart-axis-color').trim()
+                    }
+                },
+                y: {
+                    grid: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--light-chart-axis-color').trim()  // Set initial color
+                    },
+                    ticks: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--light-chart-axis-color').trim()
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--light-chart-label-color').trim()
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return `$${tooltipItem.raw.toLocaleString()}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Initial update to set the correct colors based on the current mode
+    updateChartColors(lineChart);
+
+    // Toggle dark mode
+    document.getElementById('dark-mode-toggle').addEventListener('change', function() {
+        document.body.classList.toggle('dark-mode', this.checked);
+        updateChartColors(lineChart);
+        updateBarChartColors(stackedBarChart);
+    });
+
+    // Initialize stacked bar chart
+    const barCtx = document.getElementById('stackedBarChart').getContext('2d');
+    const stackedBarChart = new Chart(barCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+            datasets: [
+                {
+                    label: 'Dataset 1',
+                    data: [10, 20, 30, 40, 50],
+                    backgroundColor: '#4a3c34',
+                },
+                {
+                    label: 'Dataset 2',
+                    data: [20, 30, 40, 50, 60],
+                    backgroundColor: '#605246',
+                },
+                {
+                    label: 'Dataset 3',
+                    data: [30, 40, 50, 60, 70],
+                    backgroundColor: '#776B60',
+                }
+            ]
+        },
+        options: {
+            scales: {
+                x: {
+                    stacked: true,
+                    ticks: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--light-chart-axis-color').trim()
+                    }
+                },
+                y: {
+                    stacked: true,
+                    grid: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--light-chart-axis-color').trim()
+                    },
+                    ticks: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--light-chart-axis-color').trim()
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--light-chart-label-color').trim()
+                    }
+                }
+            }
+        }
+    });
+
+    // Update chart colors for dark mode
+    function updateBarChartColors(chart) {
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        const xAxisColor = getComputedStyle(document.documentElement).getPropertyValue(isDarkMode ? '--dark-chart-axis-color' : '--light-chart-axis-color').trim();
+        const yAxisColor = getComputedStyle(document.documentElement).getPropertyValue(isDarkMode ? '--dark-chart-axis-color' : '--light-chart-axis-color').trim();
+        const labelColor = getComputedStyle(document.documentElement).getPropertyValue(isDarkMode ? '--dark-chart-label-color' : '--light-chart-label-color').trim();
+
+        chart.options.scales.x.ticks.color = xAxisColor;
+        chart.options.scales.y.ticks.color = yAxisColor;
+        chart.options.scales.y.grid.color = yAxisColor; // Update y-axis grid line color
+        chart.options.plugins.legend.labels.color = labelColor;
+        chart.update();
+    }
+
+    // Initial update to set the correct colors based on the current mode
+    updateBarChartColors(stackedBarChart);
+</script>
+</body>
+</html>
+

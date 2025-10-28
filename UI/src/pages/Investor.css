@@ -1,0 +1,380 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --dark-bg-color: #212121;
+  --card-bg-color: #2C2C2C;
+  --primary-text: #FFFFFF;
+  --secondary-text: #B0B0B0;
+  --button-color: #8B7355;
+  --button-hover: #6B5A42;
+}
+
+.investor-dashboard {
+  background-color: var(--dark-bg-color);
+  color: var(--primary-text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.dashboard-header {
+  margin-bottom: 32px;
+}
+
+.dashboard-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--primary-text);
+}
+
+.dashboard-header p {
+  font-size: 1rem;
+  color: var(--secondary-text);
+  margin: 0;
+  font-weight: 400;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto auto auto;
+  gap: 16px;
+}
+
+.card {
+  background-color: var(--card-bg-color);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.portfolio-card {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.balance-card {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.returns-card {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.listings-card {
+  grid-column: 1 / span 2;
+  grid-row: 2;
+}
+
+.breakdown-card {
+  grid-column: 1 / span 3;
+  grid-row: 3;
+}
+
+.chart-card {
+  grid-row: 4;
+  height: 300px;
+}
+
+.chart-card:first-of-type {
+  grid-column: 1;
+}
+
+.chart-card:last-of-type {
+  grid-column: 2 / span 2;
+}
+
+.chart-container {
+  height: 250px;
+  width: 100%;
+}
+
+.main-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-text);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--secondary-text);
+  margin-bottom: 16px;
+  font-weight: 400;
+}
+
+.progress-bar {
+  position: relative;
+  height: 20px;
+  background-color: #404040;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: var(--button-color);
+  border-radius: 10px;
+  transition: width 0.3s;
+}
+
+.card h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-text);
+  margin: 0 0 16px 0;
+}
+
+.card h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--primary-text);
+  margin: 0 0 8px 0;
+}
+
+.card h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--primary-text);
+  margin: 16px 0 8px 0;
+}
+
+.card p {
+  font-size: 0.875rem;
+  color: var(--secondary-text);
+  margin: 4px 0;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.primary-button {
+  background-color: var(--button-color);
+  color: var(--primary-text);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+.primary-button:hover {
+  background-color: var(--button-hover);
+}
+
+.returns-table {
+  width: 100%;
+}
+
+.returns-header,
+.returns-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.returns-header {
+  font-weight: 600;
+  color: var(--primary-text);
+  border-bottom: 1px solid #404040;
+  margin-bottom: 8px;
+}
+
+.returns-row {
+  font-weight: 400;
+  color: var(--secondary-text);
+}
+
+.total-row {
+  font-weight: 600;
+  color: var(--primary-text);
+  border-top: 1px solid #404040;
+  margin-top: 8px;
+  padding-top: 12px;
+}
+
+.returns-column {
+  text-align: left;
+}
+
+.breakdown-details {
+  margin-top: 24px;
+}
+
+.breakdown-item h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--primary-text);
+}
+
+.breakdown-item p {
+  margin: 4px 0;
+  font-size: 0.875rem;
+  color: var(--secondary-text);
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.filter-button {
+  background-color: var(--button-color);
+  color: var(--primary-text);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.filter-button:hover {
+  background-color: var(--button-hover);
+}
+
+.property-table-container {
+  margin-top: 24px;
+  overflow-x: auto;
+}
+
+.property-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--card-bg-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.property-table th,
+.property-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #404040;
+}
+
+.property-table th {
+  background-color: var(--card-bg-color);
+  color: var(--primary-text);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.property-table td {
+  background-color: var(--card-bg-color);
+  color: var(--secondary-text);
+  font-size: 0.875rem;
+}
+
+.property-table tbody tr:hover {
+  background-color: #353535;
+}
+
+.property-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.view-link {
+  background: none;
+  border: none;
+  color: var(--button-color);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.view-link:hover {
+  color: var(--button-hover);
+  text-decoration: underline;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .investor-dashboard {
+    padding: 16px;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 12px;
+  }
+  
+  .portfolio-card,
+  .balance-card,
+  .returns-card,
+  .listings-card,
+  .breakdown-card,
+  .chart-card {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  
+  .main-value {
+    font-size: 2rem;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .returns-header,
+  .returns-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .returns-column {
+    text-align: center;
+    padding: 4px 0;
+  }
+  
+  .filter-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .filter-button {
+    width: 100%;
+  }
+  
+  .property-table-container {
+    overflow-x: scroll;
+  }
+  
+  .property-table th,
+  .property-table td {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+  }
+  
+  .chart-card {
+    height: 250px;
+  }
+  
+  .chart-container {
+    height: 200px;
+  }
+}

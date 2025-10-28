@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap');
+
+:root {
+  --dark-container-color: #212122;
+  --dark-font-color: #ffffff;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 200px;
+  right: 0;
+  height: 80px;
+  background-color: var(--dark-container-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  z-index: 999;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+  flex-grow: 1;
+  max-width: 400px;
+  margin-right: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #151516;
+  color: var(--dark-font-color);
+  border-color: #333;
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+.search-input::placeholder {
+  color: #888888;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #5C5242;
+  box-shadow: 0 0 0 2px rgba(92, 82, 66, 0.1);
+}
+
+.profile-container {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  margin-right: 40px;
+}
+
+.profile-photo {
+  width: 50px;
+  height: 45px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.welcome-message {
+  font-size: 16px;
+  font-family: 'Josefin Sans', sans-serif;
+  color: var(--dark-font-color);
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 768px) {
+  .header {
+    left: 0;
+  }
+  
+  .search-input {
+    max-width: 200px;
+  }
+  
+  .welcome-message {
+    display: none;
+  }
+  
+  .profile-container {
+    margin-right: 10px;
+  }
+}

@@ -11,3 +11,4 @@ namespace TrustEze.API.DTOs
         public bool HasNextPage => Page < TotalPages;
     }
 }
+
