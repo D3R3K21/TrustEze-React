@@ -1,3 +1,21 @@
+// Export Redux types for use across the app
+export type { 
+  User as AuthUser, 
+  AuthState 
+} from '../store/slices/authSlice';
+
+export type { 
+  Property, 
+  Realtor, 
+  PagedResult 
+} from '../store/slices/propertiesSlice';
+
+export type { 
+  UserProfile, 
+  UserState 
+} from '../store/slices/userSlice';
+
+// Legacy types for backward compatibility with existing code
 export interface User {
   id: string;
   email: string;
