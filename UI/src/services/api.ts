@@ -2,6 +2,8 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5002';
 
+console.log('API_URL configured as:', API_URL);
+
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -9,9 +11,12 @@ const api = axios.create({
   },
 });
 
+console.log('Axios instance created with baseURL:', api.defaults.baseURL);
+
 // Add token to requests
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('authToken');
+  console.log('Making API request to:', config.baseURL + config.url);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -20,8 +25,16 @@ api.interceptors.request.use((config) => {
 
 // Handle response errors
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('API request succeeded:', response.config.url, response.status);
+    return response;
+  },
   (error) => {
+    console.error('API request failed:', error.config?.url, error.message);
+    if (error.response) {
+      console.error('Response status:', error.response.status);
+      console.error('Response data:', error.response.data);
+    }
     if (error.response?.status === 401) {
       // Handle unauthorized - clear token and redirect to login
       localStorage.removeItem('authToken');
