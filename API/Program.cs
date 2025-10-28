@@ -15,12 +15,18 @@ builder.Services.AddSingleton<EnvironmentVariables>();
 builder.Services.AddControllers();
 
 // Add MongoDB
+builder.Services.Configure<MongoDbConfig>(p=>{
+  p.ConnectionString = builder.Configuration["MongoConnectionString"] ?? "mongodb://172.20.240.1:27017";
+  p.Database = builder.Configuration["MongoDatabase"] ?? "TrustEze";
+  p.SeedData = bool.Parse(builder.Configuration["ENABLE_SEED_DATA"] ?? "false");
+});
+
 builder.Services.AddSingleton<MongoDbService>();
 
 // Add JWT Authentication
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "YourSuperSecretKeyThatIsAtLeast32CharactersLong!";
-var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "TrustEze";
-var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "TrustEzeUsers";
+var jwtKey = builder.Configuration["JwtKey"] ?? "YourSuperSecretKeyThatIsAtLeast32CharactersLong!";
+var jwtIssuer = builder.Configuration["JwtIssuer"] ?? "TrustEze";
+var jwtAudience = builder.Configuration["JwtAudience"] ?? "TrustEzeUsers";
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
