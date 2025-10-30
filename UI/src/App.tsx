@@ -10,6 +10,7 @@ import Search from './pages/Search';
 import Profile from './pages/Profile';
 import Homebuyer from './pages/Homebuyer';
 import Investor from './pages/Investor';
+import Listings from './pages/Listings';
 import ProtectedRoute from './components/ProtectedRoute';
 import { fetchFeaturedProperties, fetchProperties } from './store/slices/propertiesSlice';
 import { useAppDispatch, useAppSelector } from './store/hooks';
@@ -80,6 +81,7 @@ const AppContent: React.FC = () => {
                     <Route path="/search" element={<Search />} />
                     <Route path="/homebuyer" element={<Homebuyer />} />
                     <Route path="/investor" element={<Investor />} />
+                    <Route path="/listings" element={<Listings />} />
                     <Route 
                       path="/profile" 
                       element={
