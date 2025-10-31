@@ -2,6 +2,7 @@ import React from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import './Investor.css';
+import Panel from '../components/CommonComponents/Panel';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -144,10 +145,11 @@ const Investor: React.FC = () => {
         </div>
         
         <div className="card balance-card">
-          <div className="card-content">
+          {/* <div className="card-content">
             <div className="main-value">$20,209.98</div>
             <div className="subtitle">Account Balance</div>
-          </div>
+          </div> */}
+          <Panel title="Account Balance" subtitle="$20,209.98" />
         </div>
         
         <div className="card returns-card">
