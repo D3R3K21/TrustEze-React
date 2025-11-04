@@ -1,139 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap');
+@import url('https://fonts.cdnfonts.com/css/tt-tsars-a-trial');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  font-size: 12px;
+  font-size: 100%;
   text-align: left;
+  overflow-x: hidden;
 }
 
-.container {
+.login-page {
   display: flex;
   height: 100vh;
+  width: 100%;
+  gap: 0;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  overflow: hidden;
 }
 
-.left {
-  flex: 50%; /* 60% of container width */
+.login-left {
+  flex: 0 0 60%;
   position: relative;
   overflow: hidden;
 }
 
-.video-background {
+.login-video {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: -1; /* Ensure video is behind other content */
+  z-index: 0;
 }
 
-.left::before {
+.login-left::before {
   content: "";
-  background: rgba(21, 21, 22, 0.8); 
+  background: rgba(21, 21, 22, 0.8);
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 1;
 }
 
-.left-content {
+.login-left-content {
   position: absolute;
-  top: 20%;
-  left: 75%; /* Adjusted to center content */
+  top: 20vh;
+  left: 75%;
   transform: translateX(-50%);
   text-align: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #fff;
-  z-index: 1; /* Place content above video */
+  z-index: 2;
 }
 
-.right {
-  flex: 35%; 
+.login-right {
+  flex: 0 0 40%;
   background: #151516;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   position: relative;
   color: #fff;
+  margin: 0;
+  padding: 0 3rem;
+}
+
+.login-left, .login-right {
+  min-width: 0;
+}
+
+.login-page > .login-left,
+.login-page > .login-right {
+  height: 100%;
 }
 
 .login-container {
-  padding: 20px;
+  padding: 1.5rem;
   background-color: #151516;
-  border-radius: 10px;
+  border-radius: 0.625rem;
   text-align: center;
-  width: 250px;
+  width: 70%;
+  max-width: 32rem;
   height: auto;
   z-index: 2;
-  top: 10%;
+  top: 10vh;
+  margin: 0 auto;
 }
 
 .login-logo {
   font-family: 'TT Tsars';
-  font-size: 35px;
-font-weight: 200;
+  font-size: 2.1875rem;
+  font-weight: 200;
   position: relative;
-  margin-bottom: 20px; 
-  text-align: center; 
+  margin-bottom: 1.25rem;
+  text-align: center;
 }
 .subtitle {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 10px; /* Space above the subtitle */
+  margin-top: 0.625rem;
 }
 .subtitle-text {
-  font-family: 'Josefin Sans', sans-serif; /* Font for the subtitle */
-  font-size: 23px; /* Adjust size as needed */
-  margin-left: 5px; /* Space between line and subtitle text */
-font-weight: 200;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 1.4375rem;
+  margin-left: 0.3125rem;
+  font-weight: 200;
 }
 .line {
-background-color: #5C5242; /* Set the line color */
-display: inline-block;
-width: 90px; /* Adjust width as needed */
-height: 2px;
-margin-right: 5px; /* Space between the solid line and the text */
+  background-color: #5C5242;
+  display: inline-block;
+  width: 5.625rem;
+  height: 0.125rem;
+  margin-right: 0.3125rem;
 }
 .login-input {
   width: 80%;
-  padding: 10px;
+  padding: 0.625rem;
   color: #fff;
   background-color: #212122;
-  margin: 10px 0;
+  margin: 0.625rem 0;
   border: 1px solid #151516;
-  border-radius: 5px;
+  border-radius: 0.3125rem;
 }
 
 .login-input::placeholder {
-  color: #fff; 
+  color: #fff;
 }
 
 .login-button {
-  padding: 10px 20px;
+  padding: 0.625rem 1.25rem;
   background-color: #5C5242;
   color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 0.3125rem;
   cursor: pointer;
 }
 
 .forgot-link {
-  font-size: 14px;
+  font-size: 0.875rem;
   text-decoration: underline;
   color: #fff;
   cursor: pointer;
 }
 
 .disclaimer {
-  font-size: 12px;
+  font-size: 0.75rem;
   text-align: center;
   color: #6d6d6e;
-  padding: 10px;
+  padding: 0.625rem;
   position: absolute;
-  bottom: 20px;
+  bottom: 1.25rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1;
@@ -141,30 +168,31 @@ margin-right: 5px; /* Space between the solid line and the text */
 
 .social-media-section {
   text-align: center;
-  margin-top: 20px; 
+  margin-top: 1.25rem;
 }
 
 .social-media-icon {
   display: inline-block;
-  margin: 0 10px; 
+  margin: 0 0.625rem;
 }
 
-.overlay-bar {
+.login-overlay-bar {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  background: ;
+  background: transparent;
   text-align: center;
-  padding: 10px 0;
+  padding: 0.625rem 0;
+  z-index: 2;
 }
 
-.overlay-text {
+.login-overlay-text {
   margin: 0;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #6d6d6e;
   text-align: left;
-  padding: 5px 40px; 
+  padding: 0.3125rem 2.5rem;
 }
 
 a {
@@ -175,11 +203,44 @@ a {
 
 .gold-text {
   color: #8F7C5C;
-font-size: 20px;
-font-family: Josefin Sans, sans-serif;
-font-weight: 500;
+  font-size: 1.25rem;
+  font-family: Josefin Sans, sans-serif;
+  font-weight: 500;
 }
 
 .moved-up {
-  margin-top: -10px;
+  margin-top: -0.625rem;
+}
+
+@media (max-width: 900px) {
+  .login-page {
+    flex-direction: column;
+  }
+  .login-left, .login-right {
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 50vh;
+  }
+  .login-left-content {
+    top: 10vh;
+    left: 50%;
+  }
+  .login-container {
+    width: min(92%, 22rem);
+  }
+}
+
+@media (max-width: 600px) {
+  .login-logo {
+    font-size: 1.875rem;
+  }
+  .subtitle-text {
+    font-size: 1.25rem;
+  }
+  .line {
+    width: 4.5rem;
+  }
+  .login-overlay-text {
+    padding: 0.3125rem 1.25rem;
+  }
 }

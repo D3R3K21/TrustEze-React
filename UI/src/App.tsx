@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout/Layout';
 import Login from './pages/Login';
 import Temp from './pages/Temp';
@@ -14,8 +15,9 @@ import './App.css';
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <div className="App">
+      <ThemeProvider>
+        <Router>
+          <div className="App">
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route 
@@ -40,8 +42,9 @@ function App() {
               } 
             />
           </Routes>
-        </div>
-      </Router>
+          </div>
+        </Router>
+      </ThemeProvider>
     </AuthProvider>
   );
 }
