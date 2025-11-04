@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace TrustEze.API
+﻿namespace TrustEze.API
 {
   public class EnvironmentVariables
   {
@@ -12,12 +10,13 @@ namespace TrustEze.API
 
       this.Jwt = new JwtConfig(config);
       this.Mongo = new MongoConfig(config);
-
+      this.DefaultUserPassword = config["DEFAULT_USER_PASSWORD"] ?? Guid.NewGuid().ToString();//should never be null
 
 
     }
     public JwtConfig Jwt { get; set; }
     public MongoConfig Mongo { get; set; }
+    public string DefaultUserPassword { get; set; }
 
   }
 
@@ -31,9 +30,9 @@ namespace TrustEze.API
     }
     public JwtConfig(IConfiguration config)
     {
-      JwtKey = config["Jwt:Key"] ?? "YourSuperSecretKeyThatIsAtLeast32CharactersLong!";
-      Issuer = config["Jwt:Issuer"] ?? "TrustEze";
-      Audience = config["Jwt:Audience"] ?? "TrustEzeUsers";
+      JwtKey = config["JWT_KEY"] ?? "YourSuperSecretKeyThatIsAtLeast32CharactersLong!";
+      Issuer = config["JWT_ISSUER"] ?? "TrustEze";
+      Audience = config["JWT_AUDIENCE"] ?? "TrustEzeUsers";
     }
     public string JwtKey { get; set; }
     public string Issuer { get; set; }
@@ -45,16 +44,16 @@ namespace TrustEze.API
     {
       ConnectionString = connectionString;
       Database = database;
-      SeedData = seedData;
+      EnableSeedData = seedData;
     }
     public MongoConfig(IConfiguration config) 
     {
-      ConnectionString = config.GetConnectionString("MongoDB") ?? "mongodb://localhost:27017";
-      Database = config["MongoDB:DatabaseName"] ?? "TrustEzeDb";
-      SeedData = bool.Parse(config["ENABLE_SEED_DATA"] ?? "false");
+      ConnectionString = config["MONGO_CONNECTION_STRING"] ?? "mongodb://localhost:27017";
+      Database = config["MONGO_DATABASE_NAME"] ?? "TrustEzeDb";
+      EnableSeedData = bool.Parse(config["ENABLE_SEED_DATA"] ?? "false");
     }
     public string ConnectionString { get; set; }
     public string Database { get; set; }
-    public bool SeedData { get; set; }
+    public bool EnableSeedData { get; set; }
   }
 }

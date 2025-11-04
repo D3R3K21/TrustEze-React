@@ -9,24 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 //Populate & Register Environment Variables
-builder.Services.AddSingleton<EnvironmentVariables>();
+var environmentVariables = new EnvironmentVariables(builder.Configuration);
+builder.Services.AddSingleton(environmentVariables);
 
 // Add services to the container.
 builder.Services.AddControllers();
 
 // Add MongoDB
-builder.Services.Configure<MongoDbConfig>(p=>{
-  p.ConnectionString = builder.Configuration["MongoConnectionString"] ?? "mongodb://172.20.240.1:27017";
-  p.Database = builder.Configuration["MongoDatabase"] ?? "TrustEze";
-  p.SeedData = bool.Parse(builder.Configuration["ENABLE_SEED_DATA"] ?? "false");
-});
-
 builder.Services.AddSingleton<MongoDbService>();
-
-// Add JWT Authentication
-var jwtKey = builder.Configuration["JwtKey"] ?? "YourSuperSecretKeyThatIsAtLeast32CharactersLong!";
-var jwtIssuer = builder.Configuration["JwtIssuer"] ?? "TrustEze";
-var jwtAudience = builder.Configuration["JwtAudience"] ?? "TrustEzeUsers";
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -37,9 +27,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtIssuer,
-            ValidAudience = jwtAudience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtKey))
+            ValidIssuer = environmentVariables.Jwt.Issuer,
+            ValidAudience = environmentVariables.Jwt.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(environmentVariables.Jwt.JwtKey))
         };
     });
 

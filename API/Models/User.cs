@@ -34,5 +34,8 @@ namespace TrustEze.API.Models
         
         [BsonElement("lastLoginAt")]
         public DateTime? LastLoginAt { get; set; }
+
+        [BsonElement("roles")]
+        public List<Role> Roles { get; set; } = new List<Role>();
     }
 }
