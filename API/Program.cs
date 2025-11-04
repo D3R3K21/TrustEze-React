@@ -118,5 +118,6 @@ using (var scope = app.Services.CreateScope())
   var seeder = new DatabaseSeeder(mongoDbService,settings);
     await seeder.SeedAsync();
 }
-
+Console.WriteLine("Database seeded");
+Console.WriteLine("Starting server...");
 app.Run();

@@ -49,6 +49,7 @@ namespace TrustEze.API.Services
             {
                 new User
                 {
+                    Id = new Guid("123e4567-e89b-12d3-a456-426614174000").ToString(),
                     Email = "buyer@trusteze.com",
                     PasswordHash = defaultPW,
                     Name = "Buyer User",
@@ -58,6 +59,7 @@ namespace TrustEze.API.Services
                 },
                 new User
                 {
+                    Id = new Guid("246e4567-e89b-12d3-a456-426614174001").ToString(),
                     Email = "investor@trusteze.com",
                     PasswordHash = defaultPW,
                     Name = "Investor User",
@@ -67,6 +69,7 @@ namespace TrustEze.API.Services
                 },
                 new User
                 {
+                    Id = new Guid("369e4567-e89b-12d3-a456-426614174002").ToString(),
                     Email = "admin@trusteze.com",
                     PasswordHash = defaultPW,
                     Name = "Admin User",

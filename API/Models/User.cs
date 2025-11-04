@@ -7,7 +7,7 @@ namespace TrustEze.API.Models
     public class User
     {
         [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonRepresentation(BsonType.String)]
         public string Id { get; set; } = string.Empty;
         
         [Required]
