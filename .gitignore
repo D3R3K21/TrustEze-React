@@ -464,3 +464,5 @@ coverage/
 
 # Next.js specific (if applicable)
 .next/
+
+.npm-cache/

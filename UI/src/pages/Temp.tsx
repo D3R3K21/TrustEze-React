@@ -34,6 +34,13 @@ const Temp: React.FC = () => {
             shape="square"
             onClick={handleInvestorClick}
           />
+
+          <Button 
+            name="Listings" 
+            size="big" 
+            shape="square"
+            onClick={() => navigate('/listings')}
+          />
         </div>
       </div>
     </div>
