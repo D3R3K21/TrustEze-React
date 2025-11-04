@@ -24,8 +24,8 @@ services:
     container_name: trusteze-api
     restart: unless-stopped
     ports:
-      - "5000:80"
-      - "5001:443"
+      - "5002:80"
+      - "5003:443"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80

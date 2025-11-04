@@ -50,7 +50,7 @@
     {
       ConnectionString = config["MONGO_CONNECTION_STRING"] ?? "mongodb://localhost:27017";
       Database = config["MONGO_DATABASE_NAME"] ?? "TrustEzeDb";
-      EnableSeedData = bool.Parse(config["ENABLE_SEED_DATA"] ?? "false");
+      EnableSeedData = bool.TryParse(config["ENABLE_SEED_DATA"], out var enableSeedData) ? enableSeedData : false;
     }
     public string ConnectionString { get; set; }
     public string Database { get; set; }
