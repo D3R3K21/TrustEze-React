@@ -83,7 +83,7 @@ const Sidebar: React.FC = () => {
   return (
     <aside className="sidebar">
       <div className="title-container">
-        <span className="brand-primary">TRUSTKEYS</span>
+        TRUSTKEYS
         <div className="subtitle">
           <span className="line"></span>
           <span className="subtitle-text">HOMES</span>

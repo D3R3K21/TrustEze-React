@@ -1,12 +1,16 @@
 import React from 'react';
 import './Homebuyer.css';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Homebuyer: React.FC = () => {
   return (
     <div className="homebuyer-dashboard">
-      <div className="dashboard-header">
-        <h1>Welcome to the Homebuyer Dashboard</h1>
-        <p>Here you can find all the necessary information about your home, reports, and settings.</p>
+      <div className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1>Welcome to the Homebuyer Dashboard</h1>
+          <p>Here you can find all the necessary information about your home, reports, and settings.</p>
+        </div>
+        <ThemeToggle />
       </div>
       
       <div className="dashboard-grid">

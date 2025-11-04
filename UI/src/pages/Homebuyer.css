@@ -1,6 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
+  --light-bg-color: #fafafa;
+  --light-container-color: #ffffff;
+  --light-font-color: #151516;
+  --light-border-color: rgba(0,0,0,0.1);
+  --light-chart-axis-color: #151516;
+  --light-chart-label-color: #151516;
+
+  --dark-bg-color: #151516;
+  --dark-container-color: #212122;
+  --dark-font-color: #ffffff;
+  --dark-border-color: #404040;
+  --dark-chart-axis-color: #e0e0e0;
+  --dark-chart-label-color: #e0e0e0;
+
+  --button-color: #5C5242;
+  --button-hover: #4a3c34;
+}
+
+:root {
   --dark-bg-color: #212121;
   --card-bg-color: #2C2C2C;
   --primary-text: #FFFFFF;
@@ -10,11 +29,26 @@
 }
 
 .homebuyer-dashboard {
-  background-color: var(--dark-bg-color);
-  color: var(--primary-text);
+  background-color: var(--light-bg-color);
+  color: var(--light-font-color);
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
   padding: 24px;
+}
+
+.dark-mode .homebuyer-dashboard {
+  background-color: var(--dark-bg-color);
+  color: var(--dark-font-color);
+}
+
+/* Ensure header text switches with theme */
+.homebuyer-dashboard .dashboard-header h1,
+.homebuyer-dashboard .dashboard-header p {
+  color: var(--light-font-color);
+}
+.dark-mode .homebuyer-dashboard .dashboard-header h1,
+.dark-mode .homebuyer-dashboard .dashboard-header p {
+  color: var(--dark-font-color);
 }
 
 .dashboard-header {
@@ -42,11 +76,41 @@
   gap: 16px;
 }
 
+.dashboard-grid .card,
 .card {
-  background-color: var(--card-bg-color);
+  background-color: var(--light-container-color);
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--light-border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dark-mode .dashboard-grid .card,
+.dark-mode .card {
+  background-color: var(--dark-container-color);
+  border: 1px solid var(--dark-border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Ensure card text switches with theme */
+.homebuyer-dashboard .dashboard-grid .card h2,
+.homebuyer-dashboard .card h2,
+.homebuyer-dashboard .card h3,
+.homebuyer-dashboard .card h4,
+.homebuyer-dashboard .card p,
+.homebuyer-dashboard .main-value,
+.homebuyer-dashboard .subtitle {
+  color: var(--light-font-color);
+}
+.dark-mode .homebuyer-dashboard .dashboard-grid .card h2,
+.dark-mode .homebuyer-dashboard .card h2,
+.dark-mode .homebuyer-dashboard .card h3,
+.dark-mode .homebuyer-dashboard .card h4,
+.dark-mode .homebuyer-dashboard .card p,
+.dark-mode .homebuyer-dashboard .main-value,
+.dark-mode .homebuyer-dashboard .subtitle {
+  color: var(--dark-font-color);
 }
 
 .card-content {
@@ -83,13 +147,13 @@
 .main-value {
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--primary-text);
+  color: inherit;
   margin-bottom: 8px;
 }
 
 .subtitle {
   font-size: 0.875rem;
-  color: var(--secondary-text);
+  color: inherit;
   margin-bottom: 16px;
   font-weight: 400;
 }
@@ -97,27 +161,27 @@
 .card h2 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--primary-text);
+  color: inherit;
   margin: 0 0 16px 0;
 }
 
 .card h3 {
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--primary-text);
+  color: inherit;
   margin: 0 0 8px 0;
 }
 
 .card h4 {
   font-size: 1rem;
   font-weight: 500;
-  color: var(--primary-text);
+  color: inherit;
   margin: 16px 0 8px 0;
 }
 
 .card p {
   font-size: 0.875rem;
-  color: var(--secondary-text);
+  color: inherit;
   margin: 4px 0;
   font-weight: 400;
   line-height: 1.5;
@@ -125,7 +189,7 @@
 
 .primary-button {
   background-color: var(--button-color);
-  color: var(--primary-text);
+  color: #fff;
   border: none;
   padding: 12px 24px;
   border-radius: 8px;
@@ -143,6 +207,15 @@
 
 .returns-table {
   width: 100%;
+  background-color: var(--light-container-color);
+  border: 1px solid var(--light-border-color);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.dark-mode .returns-table {
+  background-color: var(--dark-container-color);
+  border: 1px solid var(--dark-border-color);
 }
 
 .returns-header,
@@ -155,22 +228,30 @@
 
 .returns-header {
   font-weight: 600;
-  color: var(--primary-text);
-  border-bottom: 1px solid #404040;
+  color: inherit;
+  border-bottom: 1px solid rgba(0,0,0,0.15);
   margin-bottom: 8px;
+}
+
+.dark-mode .returns-header {
+  border-bottom: 1px solid #404040;
 }
 
 .returns-row {
   font-weight: 400;
-  color: var(--secondary-text);
+  color: inherit;
 }
 
 .total-row {
   font-weight: 600;
-  color: var(--primary-text);
-  border-top: 1px solid #404040;
+  color: inherit;
+  border-top: 1px solid rgba(0,0,0,0.15);
   margin-top: 8px;
   padding-top: 12px;
+}
+
+.dark-mode .total-row {
+  border-top: 1px solid #404040;
 }
 
 .returns-column {
@@ -224,34 +305,53 @@
 .property-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: var(--card-bg-color);
+  background-color: var(--light-container-color);
   border-radius: 8px;
   overflow: hidden;
+}
+
+.dark-mode .property-table {
+  background-color: var(--dark-container-color);
 }
 
 .property-table th,
 .property-table td {
   padding: 12px 16px;
   text-align: left;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  color: var(--light-font-color);
+}
+
+.dark-mode .property-table th,
+.dark-mode .property-table td {
   border-bottom: 1px solid #404040;
+  color: var(--dark-font-color);
 }
 
 .property-table th {
-  background-color: var(--card-bg-color);
-  color: var(--primary-text);
+  background-color: var(--light-container-color);
+  color: inherit;
   font-weight: 600;
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
+.dark-mode .property-table th {
+  background-color: var(--dark-container-color);
+}
+
 .property-table td {
-  background-color: var(--card-bg-color);
-  color: var(--secondary-text);
+  background-color: inherit;
+  color: inherit;
   font-size: 0.875rem;
 }
 
 .property-table tbody tr:hover {
+  background-color: rgba(0,0,0,0.04);
+}
+
+.dark-mode .property-table tbody tr:hover {
   background-color: #353535;
 }
 
@@ -275,6 +375,43 @@
   color: var(--button-hover);
   text-decoration: underline;
 }
+
+/* View window (modal) theming */
+.view-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.view-modal {
+  background-color: var(--light-container-color);
+  color: var(--light-font-color);
+  border: 1px solid var(--light-border-color);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  width: min(90vw, 720px);
+  max-height: 85vh;
+  overflow: auto;
+  padding: 24px;
+}
+
+.dark-mode .view-modal {
+  background-color: var(--dark-container-color);
+  color: var(--dark-font-color);
+  border: 1px solid var(--dark-border-color);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Make the overlay visible when targeted by a class toggle */
+.view-modal-overlay.is-open { display: flex; }
+
+/* Ensure view links have theme-aware colors */
+.view-link { color: var(--button-color); }
+.dark-mode .view-link { color: var(--button-color); }
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {

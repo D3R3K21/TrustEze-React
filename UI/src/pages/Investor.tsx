@@ -2,6 +2,8 @@ import React from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import './Investor.css';
+import ThemeToggle from '../components/ThemeToggle';
+import Panel from '../components/CommonComponents/Panel';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -126,9 +128,12 @@ const Investor: React.FC = () => {
 
   return (
     <div className="investor-dashboard">
-      <div className="dashboard-header">
-        <h1>Welcome to the Investor Dashboard</h1>
-        <p>Here you can find all the necessary information about your investments, reports, and settings.</p>
+      <div className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1>Welcome to the Investor Dashboard</h1>
+          <p>Here you can find all the necessary information about your investments, reports, and settings.</p>
+        </div>
+        <ThemeToggle />
       </div>
       
       <div className="dashboard-grid">
@@ -144,10 +149,11 @@ const Investor: React.FC = () => {
         </div>
         
         <div className="card balance-card">
-          <div className="card-content">
+          {/* <div className="card-content">
             <div className="main-value">$20,209.98</div>
             <div className="subtitle">Account Balance</div>
-          </div>
+          </div> */}
+          <Panel title="Account Balance" subtitle="$20,209.98" />
         </div>
         
         <div className="card returns-card">
