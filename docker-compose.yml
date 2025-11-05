@@ -36,30 +36,30 @@ services:
       - JWT_AUDIENCE=TrustEzeUsers
       - DEFAULT_USER_PASSWORD=password!1
       - ENABLE_SEED_DATA=true
+      - HASDATA_API_KEY=28b37628-1c9a-49a3-9e05-f18975827794
     depends_on:
       - mongo
     networks:
       - trusteze-network
 
-  # UI
-  # ui:
-  #   build:
-  #     context: ./UI
-  #     dockerfile: Dockerfile
-  #   container_name: trusteze-ui
-  #   restart: unless-stopped
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - REACT_APP_API_URL=http://localhost:5002
-  #     - CHOKIDAR_USEPOLLING=true
-  #   depends_on:
-  #     - api
-  #   networks:
-  #     - trusteze-network
-  #   volumes:
-  #     - ./UI:/app
-  #     - /app/node_modules
+  ui:
+    build:
+      context: ./UI
+      dockerfile: Dockerfile
+    container_name: trusteze-ui
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5002
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - api
+    networks:
+      - trusteze-network
+    volumes:
+      - ./UI:/app
+      - /app/node_modules
 
 volumes:
   mongo_data:

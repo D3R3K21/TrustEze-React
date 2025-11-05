@@ -27,7 +27,14 @@
       "applicationUrl": "https://localhost:5000;http://localhost:5001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ENABLE_SEED_DATA": "true"
+        "ENABLE_SEED_DATA": "true",
+        "MONGO_CONNECTION_STRING": "mongodb://admin:password123@localhost:27017",
+        "MONGO_DATABASE_NAME": "TrustEze",
+        "JWT_KEY": "c174b8980ac99393a1b064e5cf9c3cae",
+        "JWT_ISSUER": "TrustEze",
+        "JWT_AUDIENCE": "TrustEzeUsers",
+        "DEFAULT_USER_PASSWORD": "password!1",
+        "HASDATA_API_KEY": "28b37628-1c9a-49a3-9e05-f18975827794"
       }
     },
     "IIS Express": {

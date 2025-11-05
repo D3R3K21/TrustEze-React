@@ -4,6 +4,7 @@ using TrustEze.API.Services;
 using TrustEze.API.DTOs;
 using TrustEze.API.Models;
 using MongoDB.Driver;
+using RestSharp;
 
 namespace TrustEze.API.Controllers
 {
@@ -12,12 +13,52 @@ namespace TrustEze.API.Controllers
     public class PropertiesController : ControllerBase
     {
         private readonly MongoDbService _mongoDbService;
+        private readonly EnvironmentVariables _environmentVariables;
 
-        public PropertiesController(MongoDbService mongoDbService)
+        public PropertiesController(MongoDbService mongoDbService, EnvironmentVariables environmentVariables)
         {
             _mongoDbService = mongoDbService;
+            _environmentVariables = environmentVariables;
         }
 
+        [HttpGet("search")]
+        public async Task<ActionResult> Search([FromQuery] SearchRequest searchRequest)
+        {
+            var client = new RestClient(_environmentVariables.HasData.BaseUrl + searchRequest.ToQueryString());
+            var request = new RestRequest();
+            request.AddHeader("x-api-key", _environmentVariables.HasData.ApiKey);
+            request.AddHeader("Content-Type", "application/json");
+            var response = await client.ExecuteAsync<SearchResponse>(request);
+            if (!response.IsSuccessful) 
+            {
+                return BadRequest(response.ErrorMessage);
+            }
+            return new JsonResult(response.Data);
+            //var requestUrl = "https://api.hasdata.com/scrape/zillow/listing?" +
+            //    "keyword=Phoenix%2C+AZ" +
+            //    "&type=forSale" +
+            //    "&sort=verifiedSource" +
+            //    "&price.min=100000" +
+            //    "&price.max=500001" +
+            //    "&beds.min=3" +
+            //    "&beds.max=5" +
+            //    "&baths.min=2" +
+            //    "&baths.max=5" +
+            //    "&yearBuilt.min=2000" +
+            //    "&yearBuilt.max=2025" +
+            //    "&lotSize.min=1000" +
+            //    "&lotSize.max=9998" +
+            //    "&squareFeet.min=999" +
+            //    "&squareFeet.max=3998" +
+            //    "&homeTypes=house" +
+            //    "&homeTypes=townhome" +
+            //    "&homeTypes=multiFamily" +
+            //    "&homeTypes=lot" +
+            //    "&homeTypes=condo" +
+            //    "&homeTypes=apartment" +
+            //    "&homeTypes=manufactured";
+
+        }
         [HttpGet]
         public async Task<ActionResult<PagedResult<PropertyDto>>> GetProperties([FromQuery] PropertySearchRequest request)
         {
