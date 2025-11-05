@@ -20,7 +20,7 @@ const Listings: React.FC = () => {
   return (
     <div className="listings-page">
       <ListingsHeader />
-      <div className="container">
+      <div className="container" style={{ paddingTop: '2rem' }}>
         <Box sx={{ mb: 4 }}>
           <Box className="listings-header" sx={{ textAlign: 'left' }}>
             <Typography variant="h3" component="h1" gutterBottom>

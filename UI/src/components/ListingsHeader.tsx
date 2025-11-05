@@ -35,6 +35,7 @@ const ListingsHeader: React.FC = () => {
         color: '#333',
         boxShadow: 'none',
         borderBottom: '1px solid #e0e0e0',
+        marginTop: 0,
       }}
     >
       <Toolbar 
@@ -151,6 +152,22 @@ const ListingsHeader: React.FC = () => {
             >
               Contact
             </Button>
+            <Button
+              component={Link}
+              to="/login"
+              sx={{
+                color: '#1a1a1a',
+                textTransform: 'none',
+                fontSize: '1rem',
+                fontWeight: 400,
+                '&:hover': {
+                  backgroundColor: 'transparent',
+                  textDecoration: 'underline',
+                },
+              }}
+            >
+              Login
+            </Button>
           </Box>
         </Box>
 
@@ -204,6 +221,8 @@ const ListingsHeader: React.FC = () => {
               textTransform: 'none',
               borderRadius: '8px',
               padding: '0.75rem 1.5rem',
+              minWidth: '140px',
+              height: '48px',
               fontWeight: 500,
               '&:hover': {
                 backgroundColor: '#7a6344',
@@ -216,10 +235,12 @@ const ListingsHeader: React.FC = () => {
           <FormControl
             sx={{
               minWidth: { xs: '100%', sm: '140px' },
+              height: '48px',
               '& .MuiOutlinedInput-root': {
                 backgroundColor: '#8b7355',
                 borderRadius: '8px',
                 color: '#fff',
+                height: '48px',
                 '& fieldset': {
                   borderColor: '#8b7355',
                 },
@@ -238,7 +259,7 @@ const ListingsHeader: React.FC = () => {
               displayEmpty
               renderValue={(selected) => {
                 if (!selected) {
-                  return <span style={{ color: '#fff' }}>Price ▼</span>;
+                  return <span style={{ color: '#fff' }}>Price</span>;
                 }
                 return <span style={{ color: '#fff' }}>{selected}</span>;
               }}
@@ -260,10 +281,12 @@ const ListingsHeader: React.FC = () => {
           <FormControl
             sx={{
               minWidth: { xs: '100%', sm: '160px' },
+              height: '48px',
               '& .MuiOutlinedInput-root': {
                 backgroundColor: '#8b7355',
                 borderRadius: '8px',
                 color: '#fff',
+                height: '48px',
                 '& fieldset': {
                   borderColor: '#8b7355',
                 },
@@ -282,7 +305,7 @@ const ListingsHeader: React.FC = () => {
               displayEmpty
               renderValue={(selected) => {
                 if (!selected) {
-                  return <span style={{ color: '#fff' }}>Beds/Baths ▼</span>;
+                  return <span style={{ color: '#fff' }}>Beds/Baths</span>;
                 }
                 return <span style={{ color: '#fff' }}>{selected}</span>;
               }}
@@ -304,10 +327,12 @@ const ListingsHeader: React.FC = () => {
           <FormControl
             sx={{
               minWidth: { xs: '100%', sm: '150px' },
+              height: '48px',
               '& .MuiOutlinedInput-root': {
                 backgroundColor: '#8b7355',
                 borderRadius: '8px',
                 color: '#fff',
+                height: '48px',
                 '& fieldset': {
                   borderColor: '#8b7355',
                 },
@@ -326,7 +351,7 @@ const ListingsHeader: React.FC = () => {
               displayEmpty
               renderValue={(selected) => {
                 if (!selected) {
-                  return <span style={{ color: '#fff' }}>Home Type ▼</span>;
+                  return <span style={{ color: '#fff' }}>Home Type</span>;
                 }
                 return <span style={{ color: '#fff' }}>{selected}</span>;
               }}
@@ -352,6 +377,8 @@ const ListingsHeader: React.FC = () => {
               textTransform: 'none',
               borderRadius: '8px',
               padding: '0.75rem 1.5rem',
+              minWidth: '140px',
+              height: '48px',
               fontWeight: 500,
               '&:hover': {
                 backgroundColor: '#7a6344',
