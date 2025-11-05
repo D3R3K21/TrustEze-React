@@ -21,6 +21,7 @@ namespace TrustEze.API.Controllers
             _environmentVariables = environmentVariables;
         }
 
+        [Authorize]
         [HttpGet("search")]
         public async Task<ActionResult> Search([FromQuery] SearchRequest searchRequest)
         {
