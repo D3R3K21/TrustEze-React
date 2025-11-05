@@ -1,3 +1,5 @@
+using TrustEze.API.Models;
+
 namespace TrustEze.API.DTOs
 {
     public class UserDto
@@ -9,5 +11,22 @@ namespace TrustEze.API.DTOs
         public string? Avatar { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? LastLoginAt { get; set; }
+        public List<RoleDto> Roles { get; set; } = new();
+
+        public UserDto()
+        {
+        }
+        public UserDto(User user)
+        {
+            if (user == null)return;
+            Id = user.Id;
+            Email = user.Email;
+            Name = user.Name;
+            Phone = user.Phone;
+            Avatar = user.Avatar;
+            CreatedAt = user.CreatedAt;
+            LastLoginAt = user.LastLoginAt;
+            Roles = user.Roles?.Select(r => new RoleDto(r)).ToList() ?? [];
+        }
     }
 }

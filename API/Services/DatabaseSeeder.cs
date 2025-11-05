@@ -1,71 +1,93 @@
 using TrustEze.API.Models;
-using BCrypt.Net;
 using MongoDB.Driver;
 
 namespace TrustEze.API.Services
 {
-  public class DatabaseSeeder
-  {
-    private readonly MongoDbService _mongoDbService;
-
-    public DatabaseSeeder(MongoDbService mongoDbService, EnvironmentVariables settings)
+    public class DatabaseSeeder
     {
-      _mongoDbService = mongoDbService;
-    }
+        private readonly MongoDbService _mongoDbService;
+        private readonly EnvironmentVariables _settings;
 
-    public async Task SeedAsync()
-    {
-      var seedData = true;
-      // Seed users if none exist
-      //var userCount = await _mongoDbService.Users.CountDocumentsAsync(_ => true);
-      if (seedData)
-      {
-        await SeedUsersAsync();
-      }
+        public DatabaseSeeder(MongoDbService mongoDbService, EnvironmentVariables settings)
+        {
+            _mongoDbService = mongoDbService;
+            _settings = settings;
+        }
 
-      // Seed realtors if none exist
-      //var realtorCount = await _mongoDbService.Realtors.CountDocumentsAsync(_ => true);
-      if (seedData)
-      {
-        await SeedRealtorsAsync();
-      }
+        public async Task SeedAsync()
+        {
+            if (_settings.Mongo.EnableSeedData)
+            {
+                await SeedUsersAsync();
+                await SeedRealtorsAsync();
+                await SeedPropertiesAsync();
+            }
+        }
 
-      // Seed properties if none exist
-      //var propertyCount = await _mongoDbService.Properties.CountDocumentsAsync(_ => true);
-      if (seedData)
-      {
-        await SeedPropertiesAsync();
-      }
-    }
-
-    private async Task SeedUsersAsync()
-    {
-      var users = new List<User>
+        private async Task SeedUsersAsync()
+        {
+            var defaultPW = BCrypt.Net.BCrypt.HashPassword(_settings.DefaultUserPassword);
+            var buyerRole = new Role
+            {
+                Id = new Guid("123e4567-e89b-12d3-a456-426614174000").ToString(),
+                Name = "Buyer",
+                Description = "Buyer Role"
+            };
+            var investorRole = new Role
+            {
+                Id = new Guid("246e4567-e89b-12d3-a456-426614174001").ToString(),
+                Name = "Investor",
+                Description = "Investor Role"
+            };
+            var adminRole = new Role
+            {
+                Id = new Guid("369e4567-e89b-12d3-a456-426614174002").ToString(),
+                Name = "Admin",
+                Description = "Admin Role"
+            };
+            var users = new List<User>
             {
                 new User
                 {
-                    Email = "demo@trusteze.com",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("password"),
-                    Name = "Demo User",
+                    Id = new Guid("123e4567-e89b-12d3-a456-426614174000").ToString(),
+                    Email = "buyer@trusteze.com",
+                    PasswordHash = defaultPW,
+                    Name = "Buyer User",
                     Phone = "+1 (555) 123-4567",
-                    Avatar = "https://via.placeholder.com/150"
+                    Avatar = "https://via.placeholder.com/150",
+                    Roles = new List<Role> { buyerRole }
                 },
                 new User
                 {
-                    Email = "john@example.com",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("password123"),
-                    Name = "John Smith",
+                    Id = new Guid("246e4567-e89b-12d3-a456-426614174001").ToString(),
+                    Email = "investor@trusteze.com",
+                    PasswordHash = defaultPW,
+                    Name = "Investor User",
                     Phone = "+1 (555) 234-5678",
-                    Avatar = "https://via.placeholder.com/150"
+                    Avatar = "https://via.placeholder.com/150",
+                    Roles = new List<Role> { investorRole }
+                },
+                new User
+                {
+                    Id = new Guid("369e4567-e89b-12d3-a456-426614174002").ToString(),
+                    Email = "admin@trusteze.com",
+                    PasswordHash = defaultPW,
+                    Name = "Admin User",
+                    Phone = "+1 (555) 234-5678",
+                    Avatar = "https://via.placeholder.com/150",
+                    Roles = new List<Role> { adminRole, investorRole, buyerRole }
                 }
             };
+            foreach (var user in users)
+            {
+                var filter = Builders<User>.Filter.Eq(c => c.Email, user.Email);
+                await _mongoDbService.Users.ReplaceOneAsync(filter, user,  new ReplaceOptions { IsUpsert = true });
+            }
+        }
 
-      await _mongoDbService.Users.InsertManyAsync(users);
-    }
-
-    private async Task SeedRealtorsAsync()
-    {
-      var realtors = new List<Realtor>
+        private async Task SeedRealtorsAsync()
+        {
+            var realtors = new List<Realtor>
             {
                 new Realtor
                 {
@@ -117,22 +139,22 @@ namespace TrustEze.API.Services
                 }
             };
 
-      try
-      {
-        await _mongoDbService.Realtors.InsertManyAsync(realtors);
+            try
+            {
+                await _mongoDbService.Realtors.InsertManyAsync(realtors);
 
-      }
-      catch (Exception e)
-      {
+            }
+            catch (Exception e)
+            {
 
-      }
-    }
+            }
+        }
 
-    private async Task SeedPropertiesAsync()
-    {
-      var realtors = await _mongoDbService.Realtors.Find(_ => true).ToListAsync();
+        private async Task SeedPropertiesAsync()
+        {
+            var realtors = await _mongoDbService.Realtors.Find(_ => true).ToListAsync();
 
-      var properties = new List<Property>
+            var properties = new List<Property>
             {
                 new Property
                 {
@@ -343,7 +365,7 @@ namespace TrustEze.API.Services
                 }
             };
 
-      await _mongoDbService.Properties.InsertManyAsync(properties);
+            await _mongoDbService.Properties.InsertManyAsync(properties);
+        }
     }
-  }
 }

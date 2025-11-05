@@ -31,16 +31,7 @@ namespace TrustEze.API.Controllers
             if (user == null)
                 return NotFound();
 
-            var userDto = new UserDto
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Name = user.Name,
-                Phone = user.Phone,
-                Avatar = user.Avatar,
-                CreatedAt = user.CreatedAt,
-                LastLoginAt = user.LastLoginAt
-            };
+            var userDto = new UserDto(user);
 
             return Ok(userDto);
         }
@@ -63,16 +54,7 @@ namespace TrustEze.API.Controllers
 
             await _mongoDbService.Users.ReplaceOneAsync(u => u.Id == userId, user);
 
-            var userDto = new UserDto
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Name = user.Name,
-                Phone = user.Phone,
-                Avatar = user.Avatar,
-                CreatedAt = user.CreatedAt,
-                LastLoginAt = user.LastLoginAt
-            };
+            var userDto = new UserDto(user);
 
             return Ok(userDto);
         }

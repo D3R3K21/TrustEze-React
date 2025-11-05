@@ -6,7 +6,6 @@ using System.Text;
 using TrustEze.API.Services;
 using TrustEze.API.DTOs;
 using TrustEze.API.Models;
-using BCrypt.Net;
 using MongoDB.Driver;
 
 namespace TrustEze.API.Controllers
@@ -16,12 +15,12 @@ namespace TrustEze.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly MongoDbService _mongoDbService;
-        private readonly IConfiguration _configuration;
+        private readonly EnvironmentVariables _environmentVariables;
 
-        public AuthController(MongoDbService mongoDbService, IConfiguration configuration)
+        public AuthController(MongoDbService mongoDbService, EnvironmentVariables environmentVariables)
         {
             _mongoDbService = mongoDbService;
-            _configuration = configuration;
+            _environmentVariables = environmentVariables;
         }
 
         [HttpPost("login")]
@@ -41,16 +40,7 @@ namespace TrustEze.API.Controllers
             await _mongoDbService.Users.ReplaceOneAsync(u => u.Id == user.Id, user);
 
             var token = GenerateJwtToken(user);
-            var userDto = new UserDto
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Name = user.Name,
-                Phone = user.Phone,
-                Avatar = user.Avatar,
-                CreatedAt = user.CreatedAt,
-                LastLoginAt = user.LastLoginAt
-            };
+            var userDto = new UserDto(user);
 
             return Ok(new LoginResponse
             {
@@ -107,11 +97,7 @@ namespace TrustEze.API.Controllers
 
         private string GenerateJwtToken(User user)
         {
-            var jwtKey = _configuration["Jwt:Key"] ?? "YourSuperSecretKeyThatIsAtLeast32CharactersLong!";
-            var jwtIssuer = _configuration["Jwt:Issuer"] ?? "TrustEze";
-            var jwtAudience = _configuration["Jwt:Audience"] ?? "TrustEzeUsers";
-
-            var key = Encoding.ASCII.GetBytes(jwtKey);
+            var key = Encoding.ASCII.GetBytes(_environmentVariables.Jwt.JwtKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
@@ -121,8 +107,8 @@ namespace TrustEze.API.Controllers
                     new Claim(ClaimTypes.Name, user.Name)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
-                Issuer = jwtIssuer,
-                Audience = jwtAudience,
+                Issuer = _environmentVariables.Jwt.Issuer,
+                Audience = _environmentVariables.Jwt.Audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -139,5 +125,6 @@ namespace TrustEze.API.Controllers
         public string Name { get; set; } = string.Empty;
         public string? Phone { get; set; }
         public string? Avatar { get; set; }
+        public List<string> Roles { get; set; } = [];
     }
 }

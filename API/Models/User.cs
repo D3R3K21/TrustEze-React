@@ -7,7 +7,7 @@ namespace TrustEze.API.Models
     public class User
     {
         [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonRepresentation(BsonType.String)]
         public string Id { get; set; } = string.Empty;
         
         [Required]
@@ -34,5 +34,8 @@ namespace TrustEze.API.Models
         
         [BsonElement("lastLoginAt")]
         public DateTime? LastLoginAt { get; set; }
+
+        [BsonElement("roles")]
+        public List<Role> Roles { get; set; } = new List<Role>();
     }
 }
