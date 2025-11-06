@@ -6,6 +6,7 @@ import ListingsHeader from '../components/ListingsHeader';
 import { Typography, Box } from '@mui/material';
 import './Listings.css';
 import { Property as PropertyType } from '../types';
+import axios from 'axios';
 
 const Listings: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -21,7 +22,7 @@ const Listings: React.FC = () => {
     <div className="listings-page">
       <ListingsHeader />
       <div className="container" style={{ paddingTop: '2rem' }}>
-        <Box sx={{ mb: 4 }}>
+        <Box>
           <Box className="listings-header" sx={{ textAlign: 'left' }}>
             <Typography variant="h3" component="h1" gutterBottom>
               Featured Listings
