@@ -74,16 +74,16 @@ const AppContent: React.FC = () => {
           <div className="App">
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Listings />} />
             <Route 
               path="/*" 
               element={
                 <Layout>
                   <Routes>
-                    <Route path="/" element={<Temp />} />
+                    <Route path="/dashboard" element={<Temp />} />
                     <Route path="/search" element={<Search />} />
                     <Route path="/homebuyer" element={<Homebuyer />} />
                     <Route path="/investor" element={<Investor />} />
-                    <Route path="/listings" element={<Listings />} />
                     <Route 
                       path="/profile" 
                       element={
