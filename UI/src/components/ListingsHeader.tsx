@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -12,6 +12,8 @@ import {
   FormControl,
 } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { logoutUser } from '../store/slices/authSlice';
 import './ListingsHeader.css';
 
 const ListingsHeader: React.FC = () => {
@@ -20,10 +22,40 @@ const ListingsHeader: React.FC = () => {
   const [bedsBathsFilter, setBedsBathsFilter] = useState('');
   const [homeTypeFilter, setHomeTypeFilter] = useState('');
 
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
+
+  // Get dashboard path based on user role
+  const getDashboardPath = (): string => {
+    if (!user || !user.roles || user.roles.length === 0) {
+      return '/dashboard';
+    }
+
+    const roles = user.roles.map((r) => r.name?.toLowerCase());
+    
+    // Priority: Investor > Buyer > Admin
+    if (roles.includes('investor')) {
+      return '/investor';
+    } else if (roles.includes('buyer')) {
+      return '/homebuyer';
+    } else if (roles.includes('admin')) {
+      // Admin defaults to investor dashboard
+      return '/investor';
+    }
+    
+    return '/dashboard';
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle search logic here
     console.log('Search query:', searchQuery);
+  };
+
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
+    navigate('/');
   };
 
   return (
@@ -152,22 +184,58 @@ const ListingsHeader: React.FC = () => {
             >
               Contact
             </Button>
-            <Button
-              component={Link}
-              to="/login"
-              sx={{
-                color: '#1a1a1a',
-                textTransform: 'none',
-                fontSize: '1rem',
-                fontWeight: 400,
-                '&:hover': {
-                  backgroundColor: 'transparent',
-                  textDecoration: 'underline',
-                },
-              }}
-            >
-              Login
-            </Button>
+            {isAuthenticated ? (
+              <>
+                <Button
+                  component={Link}
+                  to={getDashboardPath()}
+                  sx={{
+                    color: '#1a1a1a',
+                    textTransform: 'none',
+                    fontSize: '1rem',
+                    fontWeight: 400,
+                    '&:hover': {
+                      backgroundColor: 'transparent',
+                      textDecoration: 'underline',
+                    },
+                  }}
+                >
+                  Dashboard
+                </Button>
+                <Button
+                  onClick={handleLogout}
+                  sx={{
+                    color: '#1a1a1a',
+                    textTransform: 'none',
+                    fontSize: '1rem',
+                    fontWeight: 400,
+                    '&:hover': {
+                      backgroundColor: 'transparent',
+                      textDecoration: 'underline',
+                    },
+                  }}
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Button
+                component={Link}
+                to="/login"
+                sx={{
+                  color: '#1a1a1a',
+                  textTransform: 'none',
+                  fontSize: '1rem',
+                  fontWeight: 400,
+                  '&:hover': {
+                    backgroundColor: 'transparent',
+                    textDecoration: 'underline',
+                  },
+                }}
+              >
+                Login
+              </Button>
+            )}
           </Box>
         </Box>
 

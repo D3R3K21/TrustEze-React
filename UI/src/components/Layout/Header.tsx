@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { logoutUser } from '../../store/slices/authSlice';
 import './Header.css';
 
 const Header: React.FC = () => {
-  const { user, logout, isAuthenticated } = useAuth();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
@@ -12,8 +16,15 @@ const Header: React.FC = () => {
     console.log('Search query:', searchQuery);
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch(e);
+    }
+  };
+
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
+    navigate('/login');
   };
 
   return (
@@ -24,18 +35,25 @@ const Header: React.FC = () => {
         placeholder="Search..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
+        onKeyPress={handleKeyPress}
       />
       
-      {/* {isAuthenticated && user && ( */}
+      {isAuthenticated && user && (
         <div className="profile-container">
           <img 
-            src="https://pifa.org.au/wp-content/uploads/2024/02/240219-JMelloy-for-profile-circle-transparent.png" 
-            alt="Profile Photo" 
+            src={user.avatar || "https://pifa.org.au/wp-content/uploads/2024/02/240219-JMelloy-for-profile-circle-transparent.png"} 
+            alt={user.name || "Profile"} 
             className="profile-photo"
           />
-          <div className="welcome-message">Welcome, {"Jimothy Chad"}!</div>
+          <div className="welcome-message">Welcome, {user.name || "User"}!</div>
+          <button 
+            onClick={handleLogout}
+            className="logout-button"
+          >
+            Logout
+          </button>
         </div>
-      {/* )} */}
+      )}
     </header>
   );
 };
