@@ -49,6 +49,7 @@
   align-items: center;
   margin-top: 10px;
   margin-right: 40px;
+  gap: 15px;
 }
 
 .profile-photo {
@@ -62,6 +63,23 @@
   font-size: 16px;
   font-family: 'Josefin Sans', sans-serif;
   color: var(--dark-font-color);
+}
+
+.logout-button {
+  padding: 8px 16px;
+  background-color: transparent;
+  color: var(--dark-font-color);
+  border: 1px solid #5C5242;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: 'Josefin Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #5C5242;
+  border-color: #7a6344;
 }
 
 /* Mobile responsiveness */
@@ -80,5 +98,11 @@
   
   .profile-container {
     margin-right: 10px;
+    gap: 10px;
+  }
+  
+  .logout-button {
+    padding: 6px 12px;
+    font-size: 12px;
   }
 }

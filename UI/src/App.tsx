@@ -12,7 +12,9 @@ import Profile from './pages/Profile';
 import Homebuyer from './pages/Homebuyer';
 import Investor from './pages/Investor';
 import Listings from './pages/Listings';
+import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
+import RoleProtectedRoute from './components/RoleProtectedRoute';
 import { fetchFeaturedProperties, fetchProperties } from './store/slices/propertiesSlice';
 import { useAppDispatch, useAppSelector } from './store/hooks';
 import './App.css';
@@ -73,22 +75,54 @@ const AppContent: React.FC = () => {
         <Router>
           <div className="App">
           <Routes>
+            {/* Unprotected routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Listings />} />
+            
+            {/* Protected routes with Layout */}
             <Route 
               path="/*" 
               element={
                 <Layout>
                   <Routes>
-                    <Route path="/dashboard" element={<Temp />} />
-                    <Route path="/search" element={<Search />} />
-                    <Route path="/homebuyer" element={<Homebuyer />} />
-                    <Route path="/investor" element={<Investor />} />
                     <Route 
-                      path="/profile" 
+                      path="search" 
+                      element={
+                        <ProtectedRoute>
+                          <Search />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="homebuyer" 
+                      element={
+                        <RoleProtectedRoute allowedRoles={['Buyer', 'Admin']}>
+                          <Homebuyer />
+                        </RoleProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="investor" 
+                      element={
+                        <RoleProtectedRoute allowedRoles={['Investor', 'Admin']}>
+                          <Investor />
+                        </RoleProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="profile" 
                       element={
                         <ProtectedRoute>
                           <Profile />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    {/* Catch-all for unknown routes - redirect to login if not authenticated */}
+                    <Route 
+                      path="*" 
+                      element={
+                        <ProtectedRoute>
+                          <NotFound />
                         </ProtectedRoute>
                       } 
                     />

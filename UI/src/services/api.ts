@@ -39,6 +39,9 @@ api.interceptors.response.use(
       // Handle unauthorized - clear token and redirect to login
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
+      localStorage.removeItem('tokenExpiry');
+      // Force page reload to clear Redux state
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }
