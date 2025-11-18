@@ -3,10 +3,9 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeaturedProperties } from '../store/slices/propertiesSlice';
 import PropertyCard from '../components/PropertyCard';
 import ListingsHeader from '../components/ListingsHeader';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Paper } from '@mui/material';
 import './Listings.css';
 import { Property as PropertyType } from '../types';
-import axios from 'axios';
 
 const Listings: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -21,19 +20,8 @@ const Listings: React.FC = () => {
   return (
     <div className="listings-page">
       <ListingsHeader />
-      <div className="container" style={{ paddingTop: '2rem' }}>
-        <Box>
-          <Box className="listings-header" sx={{ textAlign: 'left' }}>
-            <Typography variant="h3" component="h1" gutterBottom>
-              Featured Listings
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Explore curated properties handpicked for value and desirability.
-            </Typography>
-          </Box>
-        </Box>
-
-        <Box>
+      <div className="container" style={{ paddingTop: 0, paddingBottom: 0 }}>
+        <Box sx={{ mt: 0 }}>
           {isLoading ? (
             <div className="loading-state">
               <div className="loading-spinner"></div>
@@ -52,15 +40,71 @@ const Listings: React.FC = () => {
               <p>Check back soon for new listings.</p>
             </div>
           ) : (
-            <div className="properties-grid">
-              {featuredProperties.map((property) => (
-                <Box key={property.id} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <Box sx={{ width: '100%', maxWidth: 380 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', md: 'row' },
+                gap: { xs: 2, md: 1 },
+                margin: 0,
+              }}
+            >
+              {/* Map placeholder - Left side (50% width) */}
+              <Box
+                sx={{
+                  width: { xs: '100%', md: '50%' },
+                  flexShrink: 0,
+                  margin: 0,
+                }}
+              >
+                <Paper
+                  elevation={2}
+                  sx={{
+                    height: { xs: '400px', md: 'calc(100vh - 180px)' },
+                    minHeight: { xs: '400px', md: 'calc(100vh - 180px)' },
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#f5f5f5',
+                    borderRadius: 0,
+                    border: 'none',
+                    borderRight: { xs: 'none', md: '1px solid #e0e0e0' },
+                    margin: 0,
+                  }}
+                >
+                  <Box sx={{ textAlign: 'center', color: 'text.secondary' }}>
+                    <Typography variant="h5" gutterBottom>
+                      🗺️
+                    </Typography>
+                    <Typography variant="h6" color="text.secondary">
+                      Map View
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                      Map integration coming soon
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Box>
+
+              {/* Property cards - Right side (50% width) */}
+              <Box
+                sx={{
+                  width: { xs: '100%', md: '50%' },
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                  maxHeight: { xs: 'none', md: 'calc(100vh - 180px)' },
+                  overflowY: { xs: 'visible', md: 'auto' },
+                  padding: { xs: '1rem', md: '1rem' },
+                  margin: 0,
+                }}
+              >
+                {featuredProperties.map((property) => (
+                  <Box key={property.id}>
                     <PropertyCard property={property as PropertyType} />
                   </Box>
-                </Box>
-              ))}
-            </div>
+                ))}
+              </Box>
+            </Box>
           )}
         </Box>
       </div>
