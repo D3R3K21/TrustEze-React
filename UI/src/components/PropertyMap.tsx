@@ -32,7 +32,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
   const [showLocationError, setShowLocationError] = useState(true);
   const [isLoadingLocation, setIsLoadingLocation] = useState(true);
   const [propertyCoordinates, setPropertyCoordinates] = useState<Map<string, [number, number]>>(new Map());
-  const [isGeocoding, setIsGeocoding] = useState(false);
+  const [showGeocodingIndicator, setShowGeocodingIndicator] = useState(false);
 
   // Default center (Phoenix, Arizona) as fallback
   const defaultCenter: [number, number] = useMemo(() => [33.4484, -112.0740], []);
@@ -75,10 +75,21 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
 
   // Geocode property addresses to coordinates
   useEffect(() => {
+    let indicatorTimeout: ReturnType<typeof setTimeout> | null = null;
+    
     const geocodeProperties = async () => {
-      if (properties.length === 0) return;
+      if (properties.length === 0) {
+        setShowGeocodingIndicator(false);
+        return;
+      }
 
-      setIsGeocoding(true);
+      setShowGeocodingIndicator(false);
+      
+      // Only show indicator if geocoding takes more than 500ms
+      indicatorTimeout = setTimeout(() => {
+        setShowGeocodingIndicator(true);
+      }, 500);
+      
       const coordinatesMap = new Map<string, [number, number]>();
 
       // Geocode each property address
@@ -114,20 +125,31 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
       }
 
       setPropertyCoordinates(coordinatesMap);
-      setIsGeocoding(false);
+      if (indicatorTimeout) {
+        clearTimeout(indicatorTimeout);
+      }
+      setShowGeocodingIndicator(false);
     };
 
     geocodeProperties();
+    
+    // Cleanup function to clear timeout if component unmounts or properties change
+    return () => {
+      if (indicatorTimeout) {
+        clearTimeout(indicatorTimeout);
+      }
+      setShowGeocodingIndicator(false);
+    };
   }, [properties]);
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-      {isLoadingLocation && (
+      {isLoadingLocation && !locationError && (
         <div
           style={{
             position: 'absolute',
             top: 10,
-            left: 10,
+            right: 10,
             zIndex: 1000,
             background: 'white',
             padding: '8px 12px',
@@ -144,7 +166,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
           style={{
             position: 'absolute',
             top: 10,
-            left: 10,
+            right: 10,
             zIndex: 1000,
             background: '#fff3cd',
             padding: '8px 12px',
@@ -156,6 +178,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
+            maxWidth: '300px',
           }}
         >
           <span>Using default location (location access denied or unavailable)</span>
@@ -190,12 +213,12 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
           </button>
         </div>
       )}
-      {isGeocoding && (
+      {/* {showGeocodingIndicator && properties.length > 0 && (
         <div
           style={{
             position: 'absolute',
             top: (locationError && showLocationError) ? 50 : 10,
-            left: 10,
+            right: 10,
             zIndex: 1000,
             background: 'white',
             padding: '8px 12px',
@@ -206,12 +229,13 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
         >
           Geocoding properties...
         </div>
-      )}
+      )} */}
       <MapContainer
         center={mapCenter}
         zoom={userLocation ? 12 : 10}
         style={{ width: '100%', height: '100%', zIndex: 0 }}
         scrollWheelZoom={true}
+        zoomControl={true}
       >
         <MapCenter center={mapCenter} />
         <TileLayer
