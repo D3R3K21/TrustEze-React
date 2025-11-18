@@ -3,7 +3,8 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeaturedProperties } from '../store/slices/propertiesSlice';
 import PropertyCard from '../components/PropertyCard';
 import ListingsHeader from '../components/ListingsHeader';
-import { Typography, Box, Paper } from '@mui/material';
+import PropertyMap from '../components/PropertyMap';
+import { Box } from '@mui/material';
 import './Listings.css';
 import { Property as PropertyType } from '../types';
 
@@ -48,41 +49,19 @@ const Listings: React.FC = () => {
                 margin: 0,
               }}
             >
-              {/* Map placeholder - Left side (50% width) */}
+              {/* Map - Left side (50% width) */}
               <Box
                 sx={{
                   width: { xs: '100%', md: '50%' },
                   flexShrink: 0,
                   margin: 0,
+                  height: { xs: '400px', md: 'calc(100vh - 180px)' },
+                  minHeight: { xs: '400px', md: 'calc(100vh - 180px)' },
+                  borderRight: { xs: 'none', md: '1px solid #e0e0e0' },
+                  position: 'relative',
                 }}
               >
-                <Paper
-                  elevation={2}
-                  sx={{
-                    height: { xs: '400px', md: 'calc(100vh - 180px)' },
-                    minHeight: { xs: '400px', md: 'calc(100vh - 180px)' },
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: '#f5f5f5',
-                    borderRadius: 0,
-                    border: 'none',
-                    borderRight: { xs: 'none', md: '1px solid #e0e0e0' },
-                    margin: 0,
-                  }}
-                >
-                  <Box sx={{ textAlign: 'center', color: 'text.secondary' }}>
-                    <Typography variant="h5" gutterBottom>
-                      🗺️
-                    </Typography>
-                    <Typography variant="h6" color="text.secondary">
-                      Map View
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                      Map integration coming soon
-                    </Typography>
-                  </Box>
-                </Paper>
+                <PropertyMap properties={featuredProperties as PropertyType[]} />
               </Box>
 
               {/* Property cards - Right side (50% width) */}

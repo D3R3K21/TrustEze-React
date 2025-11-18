@@ -78,7 +78,6 @@ const AppContent: React.FC = () => {
             {/* Unprotected routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Listings />} />
-            
             {/* Protected routes with Layout */}
             <Route 
               path="/*" 
