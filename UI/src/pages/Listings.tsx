@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchFeaturedProperties } from '../store/slices/propertiesSlice';
 import PropertyCard from '../components/PropertyCard';
 import ListingsHeader from '../components/ListingsHeader';
 import PropertyMap from '../components/PropertyMap';
+import PropertyModal from '../components/PropertyModal';
 import { Box } from '@mui/material';
 import './Listings.css';
 import { Property as PropertyType } from '../types';
@@ -11,12 +12,24 @@ import { Property as PropertyType } from '../types';
 const Listings: React.FC = () => {
   const dispatch = useAppDispatch();
   const { featuredProperties, isLoading, error } = useAppSelector((state) => state.properties);
+  const [selectedProperty, setSelectedProperty] = useState<PropertyType | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (featuredProperties.length === 0) {
       dispatch(fetchFeaturedProperties());
     }
   }, [dispatch, featuredProperties.length]);
+
+  const handlePropertyClick = (property: PropertyType) => {
+    setSelectedProperty(property);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedProperty(null);
+  };
 
   return (
     <div className="listings-page">
@@ -61,7 +74,10 @@ const Listings: React.FC = () => {
                   position: 'relative',
                 }}
               >
-                <PropertyMap properties={featuredProperties as PropertyType[]} />
+                <PropertyMap 
+                  properties={featuredProperties as PropertyType[]} 
+                  onPropertyClick={handlePropertyClick}
+                />
               </Box>
 
               {/* Property cards - Right side (50% width) */}
@@ -79,7 +95,10 @@ const Listings: React.FC = () => {
               >
                 {featuredProperties.map((property) => (
                   <Box key={property.id}>
-                    <PropertyCard property={property as PropertyType} />
+                    <PropertyCard 
+                      property={property as PropertyType}
+                      onClick={() => handlePropertyClick(property as PropertyType)}
+                    />
                   </Box>
                 ))}
               </Box>
@@ -87,6 +106,11 @@ const Listings: React.FC = () => {
           )}
         </Box>
       </div>
+      <PropertyModal
+        property={selectedProperty}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };

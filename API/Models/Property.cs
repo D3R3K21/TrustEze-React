@@ -88,6 +88,12 @@ namespace TrustEze.API.Models
         
         [BsonElement("realtor")]
         public Realtor Realtor { get; set; } = new Realtor();
+        
+        [BsonElement("latitude")]
+        public double? Latitude { get; set; }
+        
+        [BsonElement("longitude")]
+        public double? Longitude { get; set; }
     }
     
     public enum PropertyType

@@ -142,17 +142,38 @@ namespace TrustEze.API.Services
             try
             {
                 await _mongoDbService.Realtors.InsertManyAsync(realtors);
-
             }
-            catch (Exception e)
+            catch (Exception)
             {
-
+                // Ignore if realtors already exist
             }
         }
 
         private async Task SeedPropertiesAsync()
         {
             var realtors = await _mongoDbService.Realtors.Find(_ => true).ToListAsync();
+
+            // Coordinate ranges for specific cities in Maricopa County
+            var cityCoordinates = new Dictionary<string, (double minLat, double maxLat, double minLng, double maxLng)>
+            {
+                { "Phoenix", (33.30, 33.60, -112.20, -111.90) },
+                { "Scottsdale", (33.40, 33.60, -111.90, -111.70) },
+                { "Tempe", (33.40, 33.50, -111.90, -111.80) },
+                { "Gilbert", (33.30, 33.40, -111.80, -111.70) },
+                { "Glendale", (33.50, 33.60, -112.20, -112.10) }
+            };
+
+            var random = new Random();
+            
+            // Helper method to get random coordinates within a city's bounds
+            (double lat, double lng) GetRandomCoordinates(string city)
+            {
+                var coords = cityCoordinates[city];
+                return (
+                    coords.minLat + (random.NextDouble() * (coords.maxLat - coords.minLat)),
+                    coords.minLng + (random.NextDouble() * (coords.maxLng - coords.minLng))
+                );
+            }
 
             var properties = new List<Property>
             {
@@ -162,9 +183,9 @@ namespace TrustEze.API.Services
                     Description = "Beautiful 4-bedroom family home with modern amenities, spacious backyard, and updated kitchen. Perfect for growing families.",
                     Price = 450000,
                     Address = "123 Oak Street",
-                    City = "Springfield",
-                    State = "IL",
-                    ZipCode = "62701",
+                    City = "Phoenix",
+                    State = "AZ",
+                    ZipCode = "85001",
                     Bedrooms = 4,
                     Bathrooms = 3,
                     SquareFeet = 2500,
@@ -189,7 +210,9 @@ namespace TrustEze.API.Services
                         new PropertyFeature { Name = "Central AC" },
                         new PropertyFeature { Name = "Garage" },
                         new PropertyFeature { Name = "Backyard" }
-                    }
+                    },
+                    Latitude = GetRandomCoordinates("Phoenix").lat,
+                    Longitude = GetRandomCoordinates("Phoenix").lng
                 },
                 new Property
                 {
@@ -197,9 +220,9 @@ namespace TrustEze.API.Services
                     Description = "Stunning downtown condo with city views, modern finishes, and premium amenities. Walking distance to restaurants and entertainment.",
                     Price = 325000,
                     Address = "456 City Center Blvd",
-                    City = "Chicago",
-                    State = "IL",
-                    ZipCode = "60601",
+                    City = "Scottsdale",
+                    State = "AZ",
+                    ZipCode = "85251",
                     Bedrooms = 2,
                     Bathrooms = 2,
                     SquareFeet = 1200,
@@ -223,7 +246,9 @@ namespace TrustEze.API.Services
                         new PropertyFeature { Name = "In-unit Laundry" },
                         new PropertyFeature { Name = "Gym Access" },
                         new PropertyFeature { Name = "Concierge" }
-                    }
+                    },
+                    Latitude = GetRandomCoordinates("Scottsdale").lat,
+                    Longitude = GetRandomCoordinates("Scottsdale").lng
                 },
                 new Property
                 {
@@ -231,9 +256,9 @@ namespace TrustEze.API.Services
                     Description = "Historic Victorian home with original character, updated systems, and beautiful garden. Located in a quiet neighborhood.",
                     Price = 380000,
                     Address = "789 Heritage Lane",
-                    City = "Evanston",
-                    State = "IL",
-                    ZipCode = "60201",
+                    City = "Tempe",
+                    State = "AZ",
+                    ZipCode = "85281",
                     Bedrooms = 3,
                     Bathrooms = 2,
                     SquareFeet = 1800,
@@ -258,7 +283,9 @@ namespace TrustEze.API.Services
                         new PropertyFeature { Name = "Garden" },
                         new PropertyFeature { Name = "Hardwood Floors" },
                         new PropertyFeature { Name = "Fireplace" }
-                    }
+                    },
+                    Latitude = GetRandomCoordinates("Tempe").lat,
+                    Longitude = GetRandomCoordinates("Tempe").lng
                 },
                 new Property
                 {
@@ -266,9 +293,9 @@ namespace TrustEze.API.Services
                     Description = "Contemporary townhouse with open floor plan, modern appliances, and private patio. Part of a quiet community.",
                     Price = 295000,
                     Address = "321 Maple Court",
-                    City = "Naperville",
-                    State = "IL",
-                    ZipCode = "60540",
+                    City = "Gilbert",
+                    State = "AZ",
+                    ZipCode = "85233",
                     Bedrooms = 3,
                     Bathrooms = 2.5m,
                     SquareFeet = 1600,
@@ -292,7 +319,9 @@ namespace TrustEze.API.Services
                         new PropertyFeature { Name = "Private Patio" },
                         new PropertyFeature { Name = "Attached Garage" },
                         new PropertyFeature { Name = "HOA Amenities" }
-                    }
+                    },
+                    Latitude = GetRandomCoordinates("Gilbert").lat,
+                    Longitude = GetRandomCoordinates("Gilbert").lng
                 },
                 new Property
                 {
@@ -300,9 +329,9 @@ namespace TrustEze.API.Services
                     Description = "Beautiful lakefront property with stunning water views, private dock, and spacious deck. Perfect for nature lovers.",
                     Price = 650000,
                     Address = "555 Lakeview Drive",
-                    City = "Lake Geneva",
-                    State = "WI",
-                    ZipCode = "53147",
+                    City = "Glendale",
+                    State = "AZ",
+                    ZipCode = "85301",
                     Bedrooms = 4,
                     Bathrooms = 3,
                     SquareFeet = 2800,
@@ -327,7 +356,9 @@ namespace TrustEze.API.Services
                         new PropertyFeature { Name = "Spacious Deck" },
                         new PropertyFeature { Name = "Fireplace" },
                         new PropertyFeature { Name = "Updated Kitchen" }
-                    }
+                    },
+                    Latitude = GetRandomCoordinates("Glendale").lat,
+                    Longitude = GetRandomCoordinates("Glendale").lng
                 },
                 new Property
                 {
@@ -335,9 +366,9 @@ namespace TrustEze.API.Services
                     Description = "Industrial-style loft with exposed brick, high ceilings, and modern amenities. Located in the heart of the arts district.",
                     Price = 275000,
                     Address = "888 Arts District Ave",
-                    City = "Milwaukee",
-                    State = "WI",
-                    ZipCode = "53202",
+                    City = "Phoenix",
+                    State = "AZ",
+                    ZipCode = "85004",
                     Bedrooms = 1,
                     Bathrooms = 1,
                     SquareFeet = 900,
@@ -361,7 +392,9 @@ namespace TrustEze.API.Services
                         new PropertyFeature { Name = "Modern Kitchen" },
                         new PropertyFeature { Name = "In-unit Laundry" },
                         new PropertyFeature { Name = "Arts District Location" }
-                    }
+                    },
+                    Latitude = GetRandomCoordinates("Phoenix").lat,
+                    Longitude = GetRandomCoordinates("Phoenix").lng
                 }
             };
 

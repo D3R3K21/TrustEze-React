@@ -85,42 +85,55 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
 
       setShowGeocodingIndicator(false);
       
-      // Only show indicator if geocoding takes more than 500ms
-      indicatorTimeout = setTimeout(() => {
-        setShowGeocodingIndicator(true);
-      }, 500);
-      
       const coordinatesMap = new Map<string, [number, number]>();
 
-      // Geocode each property address
+      // First, use coordinates from properties if available
       for (const property of properties) {
-        try {
-          // Build full address string
-          const fullAddress = `${property.address}, ${property.city}, ${property.state} ${property.zipCode}`;
-          
-          // Use OpenStreetMap Nominatim API (free, no API key needed)
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}&limit=1`,
-            {
-              headers: {
-                'User-Agent': 'TrustEze-React-App' // Required by Nominatim
+        if (property.latitude != null && property.longitude != null) {
+          coordinatesMap.set(property.id, [property.latitude, property.longitude]);
+        }
+      }
+
+      // Only geocode properties that don't have coordinates
+      const propertiesToGeocode = properties.filter(
+        p => !p.latitude || !p.longitude
+      );
+
+      if (propertiesToGeocode.length > 0) {
+        // Only show indicator if we actually need to geocode and it takes more than 500ms
+        indicatorTimeout = setTimeout(() => {
+          setShowGeocodingIndicator(true);
+        }, 500);
+
+        for (const property of propertiesToGeocode) {
+          try {
+            // Build full address string
+            const fullAddress = `${property.address}, ${property.city}, ${property.state} ${property.zipCode}`;
+            
+            // Use OpenStreetMap Nominatim API (free, no API key needed)
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}&limit=1`,
+              {
+                headers: {
+                  'User-Agent': 'TrustEze-React-App' // Required by Nominatim
+                }
+              }
+            );
+
+            if (response.ok) {
+              const data = await response.json();
+              if (data && data.length > 0) {
+                const lat = parseFloat(data[0].lat);
+                const lon = parseFloat(data[0].lon);
+                coordinatesMap.set(property.id, [lat, lon]);
               }
             }
-          );
 
-          if (response.ok) {
-            const data = await response.json();
-            if (data && data.length > 0) {
-              const lat = parseFloat(data[0].lat);
-              const lon = parseFloat(data[0].lon);
-              coordinatesMap.set(property.id, [lat, lon]);
-            }
+            // Rate limiting: Nominatim allows 1 request per second
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          } catch (error) {
+            console.warn(`Failed to geocode property ${property.id}:`, error);
           }
-
-          // Rate limiting: Nominatim allows 1 request per second
-          await new Promise(resolve => setTimeout(resolve, 1000));
-        } catch (error) {
-          console.warn(`Failed to geocode property ${property.id}:`, error);
         }
       }
 
@@ -262,6 +275,14 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
               key={property.id} 
               position={coordinates}
               eventHandlers={{
+                mouseover: (e) => {
+                  const marker = e.target;
+                  marker.openPopup();
+                },
+                mouseout: (e) => {
+                  const marker = e.target;
+                  marker.closePopup();
+                },
                 click: () => {
                   if (onPropertyClick) {
                     onPropertyClick(property);
@@ -269,17 +290,59 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
                 }
               }}
             >
-              <Popup>
-                <div>
-                  <strong>{property.title}</strong>
-                  <br />
-                  <span style={{ fontSize: '12px', color: '#666' }}>
-                    {property.address}, {property.city}, {property.state}
-                  </span>
-                  <br />
-                  <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#8b7355' }}>
-                    ${property.price.toLocaleString()}
-                  </span>
+              <Popup 
+                closeOnClick={false}
+                autoClose={false}
+                closeButton={false}
+              >
+                <div style={{ 
+                  display: 'flex', 
+                  gap: '12px', 
+                  minWidth: '300px',
+                  maxWidth: '400px'
+                }}>
+                  {/* Left side - Text content */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <strong style={{ fontSize: '14px', display: 'block', marginBottom: '6px' }}>
+                      {property.title}
+                    </strong>
+                    <span style={{ fontSize: '12px', color: '#666', display: 'block', marginBottom: '4px' }}>
+                      {property.address}, {property.city}, {property.state}
+                    </span>
+                    <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#8b7355', display: 'block', marginBottom: '6px' }}>
+                      ${property.price.toLocaleString()}
+                    </span>
+                    <div style={{ fontSize: '12px', color: '#666', marginTop: '4px', paddingTop: '4px', borderTop: '1px solid #e0e0e0' }}>
+                      <span>{property.bedrooms} bed</span> • <span>{property.bathrooms} bath</span> • <span>{property.squareFeet.toLocaleString()} sq ft</span>
+                    </div>
+                    {property.description && (
+                      <p style={{ fontSize: '11px', color: '#888', marginTop: '6px', marginBottom: 0 }}>
+                        {property.description.substring(0, 100)}{property.description.length > 100 ? '...' : ''}
+                      </p>
+                    )}
+                  </div>
+                  
+                  {/* Right side - Property image */}
+                  {property.images && property.images.length > 0 && (
+                    <div style={{ 
+                      width: '120px', 
+                      height: '120px', 
+                      flexShrink: 0,
+                      borderRadius: '6px',
+                      overflow: 'hidden',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                    }}>
+                      <img 
+                        src={property.images[0]} 
+                        alt={property.title}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
               </Popup>
             </Marker>
