@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Property } from '../types';
@@ -275,6 +275,14 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
               key={property.id} 
               position={coordinates}
               eventHandlers={{
+                mouseover: (e) => {
+                  const marker = e.target;
+                  marker.openPopup();
+                },
+                mouseout: (e) => {
+                  const marker = e.target;
+                  marker.closePopup();
+                },
                 click: () => {
                   if (onPropertyClick) {
                     onPropertyClick(property);
@@ -282,47 +290,58 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
                 }
               }}
             >
-              <Tooltip 
-                permanent={false}
-                direction="top"
-                offset={[0, -10]}
-                opacity={0.9}
+              <Popup 
+                closeOnClick={false}
+                autoClose={false}
+                closeButton={false}
               >
                 <div style={{ 
-                  textAlign: 'center',
-                  minWidth: '150px',
-                  maxWidth: '200px'
+                  display: 'flex', 
+                  gap: '12px', 
+                  minWidth: '300px',
+                  maxWidth: '400px'
                 }}>
-                  <strong style={{ fontSize: '13px', display: 'block', marginBottom: '4px' }}>
-                    {property.title}
-                  </strong>
-                  <span style={{ fontSize: '12px', color: '#8b7355', fontWeight: 'bold' }}>
-                    ${property.price.toLocaleString()}
-                  </span>
-                  <br />
-                  <span style={{ fontSize: '11px', color: '#666', display: 'block', marginTop: '2px' }}>
-                    {property.bedrooms} bed • {property.bathrooms} bath
-                  </span>
-                </div>
-              </Tooltip>
-              <Popup>
-                <div style={{ minWidth: '200px' }}>
-                  <strong style={{ fontSize: '14px', display: 'block', marginBottom: '6px' }}>
-                    {property.title}
-                  </strong>
-                  <span style={{ fontSize: '12px', color: '#666', display: 'block', marginBottom: '4px' }}>
-                    {property.address}, {property.city}, {property.state}
-                  </span>
-                  <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#8b7355', display: 'block', marginBottom: '6px' }}>
-                    ${property.price.toLocaleString()}
-                  </span>
-                  <div style={{ fontSize: '12px', color: '#666', marginTop: '4px', paddingTop: '4px', borderTop: '1px solid #e0e0e0' }}>
-                    <span>{property.bedrooms} bed</span> • <span>{property.bathrooms} bath</span> • <span>{property.squareFeet.toLocaleString()} sq ft</span>
+                  {/* Left side - Text content */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <strong style={{ fontSize: '14px', display: 'block', marginBottom: '6px' }}>
+                      {property.title}
+                    </strong>
+                    <span style={{ fontSize: '12px', color: '#666', display: 'block', marginBottom: '4px' }}>
+                      {property.address}, {property.city}, {property.state}
+                    </span>
+                    <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#8b7355', display: 'block', marginBottom: '6px' }}>
+                      ${property.price.toLocaleString()}
+                    </span>
+                    <div style={{ fontSize: '12px', color: '#666', marginTop: '4px', paddingTop: '4px', borderTop: '1px solid #e0e0e0' }}>
+                      <span>{property.bedrooms} bed</span> • <span>{property.bathrooms} bath</span> • <span>{property.squareFeet.toLocaleString()} sq ft</span>
+                    </div>
+                    {property.description && (
+                      <p style={{ fontSize: '11px', color: '#888', marginTop: '6px', marginBottom: 0 }}>
+                        {property.description.substring(0, 100)}{property.description.length > 100 ? '...' : ''}
+                      </p>
+                    )}
                   </div>
-                  {property.description && (
-                    <p style={{ fontSize: '11px', color: '#888', marginTop: '6px', marginBottom: 0 }}>
-                      {property.description.substring(0, 100)}{property.description.length > 100 ? '...' : ''}
-                    </p>
+                  
+                  {/* Right side - Property image */}
+                  {property.images && property.images.length > 0 && (
+                    <div style={{ 
+                      width: '120px', 
+                      height: '120px', 
+                      flexShrink: 0,
+                      borderRadius: '6px',
+                      overflow: 'hidden',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                    }}>
+                      <img 
+                        src={property.images[0]} 
+                        alt={property.title}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                      />
+                    </div>
                   )}
                 </div>
               </Popup>
