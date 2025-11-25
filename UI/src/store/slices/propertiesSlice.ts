@@ -30,6 +30,8 @@ export interface Property {
   images: string[];
   features: string[];
   realtor: Realtor;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface PagedResult {

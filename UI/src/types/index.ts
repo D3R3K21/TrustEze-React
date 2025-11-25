@@ -50,6 +50,8 @@ export interface Property {
     email: string;
     company: string;
   };
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface SearchFilters {
