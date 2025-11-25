@@ -78,8 +78,16 @@ const AppContent: React.FC = () => {
             {/* Unprotected routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Listings />} />
-            
-            {/* Protected routes with Layout */}
+            {/* Catch-all for unknown routes - redirect to login if not authenticated */}
+            <Route 
+                      path="*" 
+                      element={
+                        <ProtectedRoute>
+                          <NotFound />
+                        </ProtectedRoute>
+                      } 
+                    />
+            {/* DashboardProtected routes */}
             <Route 
               path="/*" 
               element={
@@ -117,15 +125,7 @@ const AppContent: React.FC = () => {
                         </ProtectedRoute>
                       } 
                     />
-                    {/* Catch-all for unknown routes - redirect to login if not authenticated */}
-                    <Route 
-                      path="*" 
-                      element={
-                        <ProtectedRoute>
-                          <NotFound />
-                        </ProtectedRoute>
-                      } 
-                    />
+                    
                   </Routes>
                 </Layout>
               } 
