@@ -22,6 +22,8 @@ namespace TrustEze.API.DTOs
         public List<string> Images { get; set; } = new();
         public List<string> Features { get; set; } = new();
         public RealtorDto Realtor { get; set; } = new();
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
     }
 
     public class RealtorDto

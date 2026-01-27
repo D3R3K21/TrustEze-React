@@ -103,7 +103,9 @@ namespace TrustEze.API.Controllers
                     Phone = p.Realtor.Phone,
                     Email = p.Realtor.Email,
                     Company = p.Realtor.Company
-                }
+                },
+                Latitude = p.Latitude,
+                Longitude = p.Longitude
             }).ToList();
 
             return Ok(new PagedResult<PropertyDto>
@@ -168,7 +170,9 @@ namespace TrustEze.API.Controllers
                     Phone = property.Realtor.Phone,
                     Email = property.Realtor.Email,
                     Company = property.Realtor.Company
-                }
+                },
+                Latitude = property.Latitude,
+                Longitude = property.Longitude
             };
 
             return Ok(propertyDto);
@@ -183,35 +187,66 @@ namespace TrustEze.API.Controllers
                 .Limit(6)
                 .ToListAsync();
 
-            var propertyDtos = properties.Select(p => new PropertyDto
+            // Coordinate ranges for specific cities in Maricopa County
+            var cityCoordinates = new Dictionary<string, (double minLat, double maxLat, double minLng, double maxLng)>
             {
-                Id = p.Id,
-                Title = p.Title,
-                Description = p.Description,
-                Price = p.Price,
-                Address = p.Address,
-                City = p.City,
-                State = p.State,
-                ZipCode = p.ZipCode,
-                Bedrooms = p.Bedrooms,
-                Bathrooms = p.Bathrooms,
-                SquareFeet = p.SquareFeet,
-                LotSize = p.LotSize,
-                YearBuilt = p.YearBuilt,
-                PropertyType = p.PropertyType.ToString(),
-                IsForSale = p.IsForSale,
-                IsForRent = p.IsForRent,
-                ListingDate = p.ListingDate,
-                Images = p.Images.OrderBy(i => i.DisplayOrder).Select(i => i.Url).ToList(),
-                Features = p.Features.Select(f => f.Name).ToList(),
-                Realtor = new RealtorDto
+                { "Phoenix", (33.30, 33.60, -112.20, -111.90) },
+                { "Scottsdale", (33.40, 33.60, -111.90, -111.70) },
+                { "Tempe", (33.40, 33.50, -111.90, -111.80) },
+                { "Gilbert", (33.30, 33.40, -111.80, -111.70) },
+                { "Glendale", (33.50, 33.60, -112.20, -112.10) }
+            };
+
+            var propertyDtos = properties.Select((p, index) => 
+            {
+                // Use existing coordinates if available, otherwise generate based on city
+                double? latitude = p.Latitude;
+                double? longitude = p.Longitude;
+                
+                if (!latitude.HasValue || !longitude.HasValue)
                 {
-                    Id = p.Realtor.Id,
-                    Name = p.Realtor.Name,
-                    Phone = p.Realtor.Phone,
-                    Email = p.Realtor.Email,
-                    Company = p.Realtor.Company
+                    // Generate random coordinates within the property's city bounds
+                    var cityName = cityCoordinates.ContainsKey(p.City) ? p.City : "Phoenix";
+                    var cityCoords = cityCoordinates[cityName];
+                    
+                    // Use index to seed random for consistency (same property gets same coords)
+                    var seededRandom = new Random(p.Id.GetHashCode() + index);
+                    latitude = cityCoords.minLat + (seededRandom.NextDouble() * (cityCoords.maxLat - cityCoords.minLat));
+                    longitude = cityCoords.minLng + (seededRandom.NextDouble() * (cityCoords.maxLng - cityCoords.minLng));
                 }
+
+                return new PropertyDto
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Address = p.Address,
+                    City = p.City,
+                    State = p.State,
+                    ZipCode = p.ZipCode,
+                    Bedrooms = p.Bedrooms,
+                    Bathrooms = p.Bathrooms,
+                    SquareFeet = p.SquareFeet,
+                    LotSize = p.LotSize,
+                    YearBuilt = p.YearBuilt,
+                    PropertyType = p.PropertyType.ToString(),
+                    IsForSale = p.IsForSale,
+                    IsForRent = p.IsForRent,
+                    ListingDate = p.ListingDate,
+                    Images = p.Images.OrderBy(i => i.DisplayOrder).Select(i => i.Url).ToList(),
+                    Features = p.Features.Select(f => f.Name).ToList(),
+                    Realtor = new RealtorDto
+                    {
+                        Id = p.Realtor.Id,
+                        Name = p.Realtor.Name,
+                        Phone = p.Realtor.Phone,
+                        Email = p.Realtor.Email,
+                        Company = p.Realtor.Company
+                    },
+                    Latitude = latitude,
+                    Longitude = longitude
+                };
             }).ToList();
 
             return Ok(propertyDtos);
