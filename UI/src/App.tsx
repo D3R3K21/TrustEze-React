@@ -78,57 +78,56 @@ const AppContent: React.FC = () => {
             {/* Unprotected routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Listings />} />
-            {/* Catch-all for unknown routes - redirect to login if not authenticated */}
-            <Route 
-                      path="*" 
-                      element={
-                        <ProtectedRoute>
-                          <NotFound />
-                        </ProtectedRoute>
-                      } 
-                    />
-            {/* DashboardProtected routes */}
-            <Route 
-              path="/*" 
+            {/* Dashboard routes - must be before catch-all so /homebuyer, /investor etc. match here */}
+            <Route
+              path="/*"
               element={
                 <Layout>
                   <Routes>
-                    <Route 
-                      path="search" 
+                    <Route
+                      path="search"
                       element={
                         <ProtectedRoute>
                           <Search />
                         </ProtectedRoute>
-                      } 
+                      }
                     />
-                    <Route 
-                      path="homebuyer" 
+                    <Route
+                      path="homebuyer"
                       element={
                         <RoleProtectedRoute allowedRoles={['Buyer', 'Admin']}>
                           <Homebuyer />
                         </RoleProtectedRoute>
-                      } 
+                      }
                     />
-                    <Route 
-                      path="investor" 
+                    <Route
+                      path="investor"
                       element={
                         <RoleProtectedRoute allowedRoles={['Investor', 'Admin']}>
                           <Investor />
                         </RoleProtectedRoute>
-                      } 
+                      }
                     />
-                    <Route 
-                      path="profile" 
+                    <Route
+                      path="profile"
                       element={
                         <ProtectedRoute>
                           <Profile />
                         </ProtectedRoute>
-                      } 
+                      }
                     />
-                    
                   </Routes>
                 </Layout>
-              } 
+              }
+            />
+            {/* Catch-all for unknown routes - must be last */}
+            <Route
+              path="*"
+              element={
+                <ProtectedRoute>
+                  <NotFound />
+                </ProtectedRoute>
+              }
             />
           </Routes>
           </div>
