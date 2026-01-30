@@ -64,6 +64,50 @@ export const propertiesAPI = {
   getFeatured: () => api.get('/api/properties/featured'),
 };
 
+// Drock.io external API for property search
+const DROCK_API_BASE = 'https://api.drock.io/api';
+
+export interface DrockSearchParams {
+  Keyword?: string;
+  Type?: string;
+  'Price.Min'?: number;
+  'Price.Max'?: number;
+  'Beds.Min'?: number;
+  'Beds.Max'?: number;
+  'Baths.Min'?: number;
+  'Baths.Max'?: number;
+  'YearBuilt.Min'?: number;
+  'YearBuilt.Max'?: number;
+  'SquareFeet.Min'?: number;
+  'SquareFeet.Max'?: number;
+  Page?: number;
+  PageSize?: number;
+}
+
+export const drockAPI = {
+  search: async (params: DrockSearchParams = {}): Promise<unknown> => {
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        searchParams.append(key, String(value));
+      }
+    });
+    const query = searchParams.toString();
+    const url = `${DROCK_API_BASE}/Properties/search${query ? `?${query}` : ''}`;
+    const res = await fetch(url);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const message =
+        (data as { message?: string })?.message ??
+        (data as { Message?: string })?.Message ??
+        (data as { error?: string })?.error ??
+        `Request failed: ${res.status} ${res.statusText}`;
+      throw new Error(message);
+    }
+    return data;
+  },
+};
+
 export const userAPI = {
   getProfile: () => api.get('/api/users/profile'),
   updateProfile: (data: { name: string; phone?: string; avatar?: string }) =>

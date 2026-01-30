@@ -28,6 +28,16 @@
   transition: transform 0.3s ease;
 }
 
+.property-image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e5e7eb;
+  color: #6b7280;
+  font-size: 0.875rem;
+  object-fit: unset;
+}
+
 .property-card:hover .property-image {
   transform: scale(1.05);
 }
@@ -121,12 +131,31 @@
   text-transform: capitalize;
 }
 
+.property-days-on-market {
+  color: #666;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
 .property-description {
   color: #666;
   font-size: 0.9rem;
   line-height: 1.5;
   margin-bottom: 1rem;
   flex: 1;
+}
+
+.property-link {
+  display: inline-block;
+  margin-top: 0.75rem;
+  color: #1976d2;
+  font-size: 0.9rem;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.property-link:hover {
+  text-decoration: underline;
 }
 
 .property-features {

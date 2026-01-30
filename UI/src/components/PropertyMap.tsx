@@ -12,6 +12,40 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
 
+// Color per property type for map pins
+const PROPERTY_TYPE_COLORS: Record<string, string> = {
+  house: '#2563eb',      // blue
+  condo: '#16a34a',      // green
+  townhouse: '#ea580c',  // orange
+  apartment: '#7c3aed',  // violet
+};
+
+const USER_LOCATION_COLOR = '#dc2626'; // red for "you are here"
+
+/** Default pin size (matches classic Leaflet marker proportions ~25×41). */
+const PIN_WIDTH = 24;
+const PIN_HEIGHT = 41;
+
+/** Classic teardrop pin path (same shape as default Leaflet marker). */
+const PIN_PATH =
+  'M12 0C5.4 0 0 5.4 0 12c0 9 12 28 12 28s12-19 12-28C24 5.4 18.6 0 12 0zm0 17.3c-2.9 0-5.3-2.4-5.3-5.3S9.1 6.7 12 6.7s5.3 2.4 5.3 5.3-2.4 5.3-5.3 5.3z';
+
+/** Create a colored pin icon in the default Leaflet teardrop shape. */
+function createColoredIcon(color: string, scale = 1): L.DivIcon {
+  const w = PIN_WIDTH * scale;
+  const h = PIN_HEIGHT * scale;
+  return L.divIcon({
+    className: 'custom-pin',
+    html: `<div style="width:${w}px;height:${h}px;position:relative;">
+      <svg width="${w}" height="${h}" viewBox="0 0 24 41" style="display:block;filter:drop-shadow(0 2px 2px rgba(0,0,0,0.35));">
+        <path fill="${color}" stroke="white" stroke-width="1.5" d="${PIN_PATH}"/>
+      </svg>
+    </div>`,
+    iconSize: [w, h],
+    iconAnchor: [w / 2, h],
+  });
+}
+
 interface PropertyMapProps {
   properties: Property[];
   onPropertyClick?: (property: Property) => void;
@@ -157,6 +191,12 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+      <style>{`
+        .leaflet-marker-icon.custom-pin {
+          background: transparent !important;
+          border: none !important;
+        }
+      `}</style>
       {isLoadingLocation && !locationError && (
         <div
           style={{
@@ -258,7 +298,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
         
         {/* User location marker */}
         {userLocation && (
-          <Marker position={userLocation}>
+          <Marker position={userLocation} icon={createColoredIcon(USER_LOCATION_COLOR, 1.15)}>
             <Popup>
               <strong>Your Location</strong>
             </Popup>
@@ -270,10 +310,13 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
           const coordinates = propertyCoordinates.get(property.id);
           if (!coordinates) return null;
 
+          const typeKey = (property.propertyType || '').toLowerCase();
+          const pinColor = PROPERTY_TYPE_COLORS[typeKey] ?? '#64748b';
           return (
-            <Marker 
-              key={property.id} 
+            <Marker
+              key={property.id}
               position={coordinates}
+              icon={createColoredIcon(pinColor)}
               eventHandlers={{
                 mouseover: (e) => {
                   const marker = e.target;

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { fetchFeaturedProperties } from '../store/slices/propertiesSlice';
+import { fetchDrockSearch } from '../store/slices/drockSearchSlice';
 import PropertyCard from '../components/PropertyCard';
 import ListingsHeader from '../components/ListingsHeader';
 import PropertyMap from '../components/PropertyMap';
@@ -11,15 +11,36 @@ import { Property as PropertyType } from '../types';
 
 const Listings: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { featuredProperties, isLoading, error } = useAppSelector((state) => state.properties);
+  const {
+    results: drockSearchResults,
+    loading: drockSearchLoading,
+    error: drockSearchError,
+  } = useAppSelector((state) => state.drockSearch);
   const [selectedProperty, setSelectedProperty] = useState<PropertyType | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const hasFetchedDrockRef = useRef(false);
 
   useEffect(() => {
-    if (featuredProperties.length === 0) {
-      dispatch(fetchFeaturedProperties());
-    }
-  }, [dispatch, featuredProperties.length]);
+    if (hasFetchedDrockRef.current) return;
+    hasFetchedDrockRef.current = true;
+    dispatch(
+      fetchDrockSearch({
+        Keyword: 'scottsdale',
+        Type: 'forSale',
+        'Price.Min': 100000,
+        'Price.Max': 500000,
+        // 'Beds.Min': 2,
+        // 'Beds.Max': 6,
+        // 'Baths.Min': 2,
+        // 'Baths.Max': 4,
+        // 'YearBuilt.Min': 1995,
+        // 'YearBuilt.Max': 2025,
+        // 'SquareFeet.Min': 1200,
+        // 'SquareFeet.Max': 4000,
+        Page: 1,
+      })
+    );
+  }, [dispatch]);
 
   const handlePropertyClick = (property: PropertyType) => {
     setSelectedProperty(property);
@@ -36,32 +57,49 @@ const Listings: React.FC = () => {
       <ListingsHeader />
       <div className="container" style={{ paddingTop: 0, paddingBottom: 0 }}>
         <Box sx={{ mt: 0 }}>
-          {isLoading ? (
+          {drockSearchLoading && drockSearchResults.length === 0 ? (
             <div className="loading-state">
               <div className="loading-spinner"></div>
-              <p>Loading featured properties...</p>
+              <p>Loading properties...</p>
             </div>
-          ) : error ? (
+          ) : drockSearchError && drockSearchResults.length === 0 ? (
             <div className="no-results">
               <div className="no-results-icon">⚠️</div>
               <h3>Unable to load listings</h3>
-              <p>Please try again later.</p>
+              <p>{drockSearchError}</p>
             </div>
-          ) : featuredProperties.length === 0 ? (
+          ) : drockSearchResults.length === 0 ? (
             <div className="no-results">
               <div className="no-results-icon">🏠</div>
-              <h3>No featured properties available</h3>
-              <p>Check back soon for new listings.</p>
+              <h3>No properties found</h3>
+              <p>Try adjusting your search criteria.</p>
             </div>
           ) : (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: { xs: 'column', md: 'row' },
-                gap: { xs: 2, md: 1 },
-                margin: 0,
-              }}
-            >
+            <>
+              {drockSearchError && (
+                <div
+                  className="listings-cache-banner"
+                  style={{
+                    padding: '8px 12px',
+                    marginBottom: '8px',
+                    background: '#fff3cd',
+                    border: '1px solid #ffc107',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    color: '#856404',
+                  }}
+                >
+                  Showing cached results. Could not refresh: {drockSearchError}
+                </div>
+              )}
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: { xs: 'column', md: 'row' },
+                  gap: { xs: 2, md: 1 },
+                  margin: 0,
+                }}
+              >
               {/* Map - Left side (50% width) */}
               <Box
                 sx={{
@@ -75,7 +113,7 @@ const Listings: React.FC = () => {
                 }}
               >
                 <PropertyMap 
-                  properties={featuredProperties as PropertyType[]} 
+                  properties={drockSearchResults as PropertyType[]} 
                   onPropertyClick={handlePropertyClick}
                 />
               </Box>
@@ -93,7 +131,7 @@ const Listings: React.FC = () => {
                   margin: 0,
                 }}
               >
-                {featuredProperties.map((property) => (
+                {drockSearchResults.map((property) => (
                   <Box key={property.id}>
                     <PropertyCard 
                       property={property as PropertyType}
@@ -103,6 +141,7 @@ const Listings: React.FC = () => {
                 ))}
               </Box>
             </Box>
+            </>
           )}
         </Box>
       </div>
