@@ -1,5 +1,7 @@
 import React from 'react';
 import { Property } from '../types';
+import { getRiskRating, getRiskLabel, getRiskColor } from '../utils/riskRating';
+import { getPricePerShareLabel } from '../utils/pricePerShare';
 import './PropertyCard.css';
 
 /** Zillow/hasdata raw property shape (optional – card works with normalized Property too). */
@@ -107,15 +109,6 @@ interface PropertyCardProps {
 const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
   const d = getDisplayValues(property);
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
-
   return (
     <div className="property-card" onClick={onClick}>
       <div className="property-image-container">
@@ -129,10 +122,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
           <div className="property-image property-image-placeholder" aria-hidden>No image</div>
         )}
         <div className="property-price">
-          {formatPrice(d.price)}
+          {getPricePerShareLabel(d.id)}
         </div>
-        <div className="property-status">
-          {d.isForSale ? 'For Sale' : d.isForRent ? 'For Rent' : 'Listing'}
+        <div
+          className="property-risk-badge"
+          style={{
+            backgroundColor: getRiskColor(getRiskRating(d.id)),
+            color: getRiskRating(d.id) === 'medium' ? '#1a1a1a' : '#fff',
+          }}
+        >
+          {getRiskLabel(getRiskRating(d.id))}
         </div>
       </div>
 
@@ -144,6 +143,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
 
         <div className="property-details">
           <div className="property-specs">
+            {/* Bedrooms/bathrooms commented out – data does not provide this info
             <span className="spec">
               <span className="spec-icon">🛏️</span>
               {d.bedrooms > 0 ? `${d.bedrooms} bed` : '— bed'}
@@ -152,16 +152,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
               <span className="spec-icon">🚿</span>
               {d.bathrooms > 0 ? `${d.bathrooms} bath` : '— bath'}
             </span>
+            */}
             {d.squareFeet > 0 && (
               <span className="spec">
                 <span className="spec-icon">📐</span>
                 {d.squareFeet.toLocaleString()} sq ft
-              </span>
-            )}
-            {d.lotAreaValue != null && d.lotAreaValue > 0 && (
-              <span className="spec">
-                <span className="spec-icon">🏞️</span>
-                {d.lotAreaValue.toLocaleString()} {d.lotAreaUnits}
               </span>
             )}
           </div>

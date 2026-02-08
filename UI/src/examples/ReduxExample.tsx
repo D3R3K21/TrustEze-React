@@ -6,8 +6,6 @@
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
-  fetchFeaturedProperties,
-  fetchProperties,
   setFilters,
   clearFilters,
 } from '../store/slices/propertiesSlice';
@@ -26,8 +24,8 @@ export const ReduxExample: React.FC = () => {
 
   // Load data on component mount
   useEffect(() => {
-    // Fetch featured properties
-    dispatch(fetchFeaturedProperties());
+    // Featured properties no longer fetched from /api/properties/featured
+    // dispatch(fetchFeaturedProperties());
 
     // If authenticated, fetch user-specific data
     if (isAuthenticated) {
@@ -50,7 +48,7 @@ export const ReduxExample: React.FC = () => {
     }
   };
 
-  // Example: Search properties
+  // Example: Search properties – local API /api/properties no longer called
   const handleSearch = async () => {
     const searchParams = {
       minPrice: 100000,
@@ -62,9 +60,10 @@ export const ReduxExample: React.FC = () => {
       sortBy: 'price-asc',
     };
 
+    // dispatch(fetchProperties(searchParams)) – disabled; listings use drock/hasdata
     try {
-      await dispatch(fetchProperties(searchParams)).unwrap();
-      console.log('Properties loaded successfully!');
+      // await dispatch(fetchProperties(searchParams)).unwrap();
+      console.log('Property search disabled – using external listing source.');
     } catch (error) {
       console.error('Failed to load properties:', error);
     }

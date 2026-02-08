@@ -5,7 +5,7 @@
   font-family: 'Inter', sans-serif;
   font-weight: 500;
   color: #FFFFFF;
-  background-color: #8B7355;
+  background-color: var(--color-primary);
   border: none;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -19,7 +19,7 @@
 }
 
 .button:hover:not(.button--disabled) {
-  background-color: #6B5A42;
+  background-color: var(--color-primary-hover);
 }
 
 .button:focus {

@@ -202,7 +202,7 @@ a {
 
 
 .gold-text {
-  color: #8F7C5C;
+  color: var(--color-primary);
   font-size: 1.25rem;
   font-family: Josefin Sans, sans-serif;
   font-weight: 500;

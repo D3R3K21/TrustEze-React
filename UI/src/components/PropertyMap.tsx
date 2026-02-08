@@ -3,6 +3,9 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Property } from '../types';
+import { colors } from '../theme';
+import { getRiskRating, getRiskColor, getRiskLabel } from '../utils/riskRating';
+import { getAvailableSharesPercent } from '../utils/homeBuiltYear';
 
 // Fix for default marker icons in React/Webpack
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -11,14 +14,6 @@ L.Icon.Default.mergeOptions({
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
-
-// Color per property type for map pins
-const PROPERTY_TYPE_COLORS: Record<string, string> = {
-  house: '#2563eb',      // blue
-  condo: '#16a34a',      // green
-  townhouse: '#ea580c',  // orange
-  apartment: '#7c3aed',  // violet
-};
 
 const USER_LOCATION_COLOR = '#dc2626'; // red for "you are here"
 
@@ -58,6 +53,204 @@ const MapCenter: React.FC<{ center: [number, number] }> = ({ center }) => {
     map.setView(center, map.getZoom());
   }, [center, map]);
   return null;
+};
+
+const TOTAL_SHARES = 10000;
+
+// Chip styles matching InvestmentModal (price/share chip)
+const pricePerShareChipStyle: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '4px',
+  padding: '4px 10px',
+  borderRadius: '16px',
+  fontSize: '0.75rem',
+  fontWeight: 700,
+  backgroundColor: `${colors.primary}1f`,
+  color: colors.primary,
+  border: `1px solid ${colors.primary}4d`,
+  whiteSpace: 'nowrap',
+};
+
+// Popup body: property info + image, then 2x2 grid (View full details | Risk | Per share | % available)
+const PopupContent: React.FC<{
+  property: Property;
+  onClose: () => void;
+  onPropertyClick?: (property: Property) => void;
+}> = ({ property, onClose, onPropertyClick }) => {
+  const pricePerShare = property.price / TOTAL_SHARES;
+  const availablePercent = getAvailableSharesPercent(property.id);
+  const riskLevel = getRiskRating(property.id);
+  const riskColor = getRiskColor(riskLevel);
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '12px',
+        minWidth: '300px',
+        maxWidth: '400px',
+      }}
+      onMouseLeave={onClose}
+    >
+      {/* Property info + image */}
+      <div style={{ display: 'flex', gap: '12px' }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <strong style={{ fontSize: '14px', display: 'block', marginBottom: '6px' }}>
+            {property.title}
+          </strong>
+          <span style={{ fontSize: '12px', color: '#666', display: 'block', marginBottom: '4px' }}>
+            {property.address}, {property.city}, {property.state}
+          </span>
+          <span style={{ fontSize: '16px', fontWeight: 'bold', color: colors.primary, display: 'block', marginBottom: '6px' }}>
+            ${property.price.toLocaleString()}
+          </span>
+          <div style={{ fontSize: '12px', color: '#666', marginTop: '4px', paddingTop: '4px', borderTop: '1px solid #e0e0e0' }}>
+            <span>{property.bedrooms} bed</span> • <span>{property.bathrooms} bath</span> • <span>{property.squareFeet.toLocaleString()} sq ft</span>
+          </div>
+          {property.description && (
+            <p style={{ fontSize: '11px', color: '#888', marginTop: '6px', marginBottom: 0 }}>
+              {property.description.substring(0, 100)}{property.description.length > 100 ? '...' : ''}
+            </p>
+          )}
+        </div>
+        {property.images && property.images.length > 0 && (
+          <div
+            style={{
+              width: '120px',
+              height: '120px',
+              flexShrink: 0,
+              borderRadius: '6px',
+              overflow: 'hidden',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            }}
+          >
+            <img
+              src={property.images[0]}
+              alt={property.title}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* 2x2 grid: top-left View full details, top-right Risk, bottom-left Per share, bottom-right % available */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gridTemplateRows: 'auto auto',
+          gap: '8px',
+          alignItems: 'center',
+        }}
+      >
+        <div style={{ justifySelf: 'start' }}>
+          {onPropertyClick && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onPropertyClick(property);
+              }}
+              style={{
+                padding: '8px 12px',
+                fontSize: '13px',
+                fontWeight: 600,
+                color: '#fff',
+                backgroundColor: colors.primary,
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+              }}
+            >
+              View full details
+            </button>
+          )}
+        </div>
+        <div style={{ justifySelf: 'end' }}>
+          <span
+            style={{
+              padding: '4px 10px',
+              borderRadius: '4px',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              letterSpacing: '0.05em',
+              textTransform: 'uppercase',
+              backgroundColor: `${riskColor}22`,
+              color: riskColor,
+              border: `1.5px solid ${riskColor}`,
+            }}
+          >
+            {getRiskLabel(riskLevel)}
+          </span>
+        </div>
+        <div style={{ justifySelf: 'start' }}>
+          <span style={pricePerShareChipStyle}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}>
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+              <polyline points="17 6 23 6 23 12" />
+            </svg>
+            ${pricePerShare.toFixed(2)} / share
+          </span>
+        </div>
+        <div style={{ justifySelf: 'end' }}>
+          <span
+            style={{
+              ...pricePerShareChipStyle,
+              backgroundColor: `${colors.primary}26`,
+            }}
+          >
+            {availablePercent}% available
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Renders property markers; uses map to ensure only one popup open and to close on mouse leave
+const PropertyMarkers: React.FC<{
+  properties: Property[];
+  propertyCoordinates: Map<string, [number, number]>;
+  onPropertyClick?: (property: Property) => void;
+}> = ({ properties, propertyCoordinates, onPropertyClick }) => {
+  const map = useMap();
+  return (
+    <>
+      {properties.map((property) => {
+        const coordinates = propertyCoordinates.get(property.id);
+        if (!coordinates) return null;
+        const riskLevel = getRiskRating(property.id);
+        const pinColor = getRiskColor(riskLevel);
+        return (
+          <Marker
+            key={property.id}
+            position={coordinates}
+            icon={createColoredIcon(pinColor)}
+            eventHandlers={{
+              click: (e) => {
+                map.closePopup();
+                e.target.openPopup();
+              },
+            }}
+          >
+            <Popup closeOnClick={false} autoClose={false} closeButton={true}>
+              <PopupContent
+                property={property}
+                onClose={() => map.closePopup()}
+                onPropertyClick={onPropertyClick}
+              />
+            </Popup>
+          </Marker>
+        );
+      })}
+    </>
+  );
 };
 
 const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }) => {
@@ -305,92 +498,12 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
           </Marker>
         )}
 
-        {/* Property markers */}
-        {properties.map((property) => {
-          const coordinates = propertyCoordinates.get(property.id);
-          if (!coordinates) return null;
-
-          const typeKey = (property.propertyType || '').toLowerCase();
-          const pinColor = PROPERTY_TYPE_COLORS[typeKey] ?? '#64748b';
-          return (
-            <Marker
-              key={property.id}
-              position={coordinates}
-              icon={createColoredIcon(pinColor)}
-              eventHandlers={{
-                mouseover: (e) => {
-                  const marker = e.target;
-                  marker.openPopup();
-                },
-                mouseout: (e) => {
-                  const marker = e.target;
-                  marker.closePopup();
-                },
-                click: () => {
-                  if (onPropertyClick) {
-                    onPropertyClick(property);
-                  }
-                }
-              }}
-            >
-              <Popup 
-                closeOnClick={false}
-                autoClose={false}
-                closeButton={false}
-              >
-                <div style={{ 
-                  display: 'flex', 
-                  gap: '12px', 
-                  minWidth: '300px',
-                  maxWidth: '400px'
-                }}>
-                  {/* Left side - Text content */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <strong style={{ fontSize: '14px', display: 'block', marginBottom: '6px' }}>
-                      {property.title}
-                    </strong>
-                    <span style={{ fontSize: '12px', color: '#666', display: 'block', marginBottom: '4px' }}>
-                      {property.address}, {property.city}, {property.state}
-                    </span>
-                    <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#8b7355', display: 'block', marginBottom: '6px' }}>
-                      ${property.price.toLocaleString()}
-                    </span>
-                    <div style={{ fontSize: '12px', color: '#666', marginTop: '4px', paddingTop: '4px', borderTop: '1px solid #e0e0e0' }}>
-                      <span>{property.bedrooms} bed</span> • <span>{property.bathrooms} bath</span> • <span>{property.squareFeet.toLocaleString()} sq ft</span>
-                    </div>
-                    {property.description && (
-                      <p style={{ fontSize: '11px', color: '#888', marginTop: '6px', marginBottom: 0 }}>
-                        {property.description.substring(0, 100)}{property.description.length > 100 ? '...' : ''}
-                      </p>
-                    )}
-                  </div>
-                  
-                  {/* Right side - Property image */}
-                  {property.images && property.images.length > 0 && (
-                    <div style={{ 
-                      width: '120px', 
-                      height: '120px', 
-                      flexShrink: 0,
-                      borderRadius: '6px',
-                      overflow: 'hidden',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                    }}>
-                      <img 
-                        src={property.images[0]} 
-                        alt={property.title}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover'
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-              </Popup>
-            </Marker>
-          );
-        })}
+        {/* Property markers - single popup at a time, closes on mouse leave */}
+        <PropertyMarkers
+          properties={properties}
+          propertyCoordinates={propertyCoordinates}
+          onPropertyClick={onPropertyClick}
+        />
       </MapContainer>
     </div>
   );

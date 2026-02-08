@@ -15,7 +15,6 @@ import Listings from './pages/Listings';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
-import { fetchFeaturedProperties, fetchProperties } from './store/slices/propertiesSlice';
 import { useAppDispatch, useAppSelector } from './store/hooks';
 import './App.css';
 
@@ -27,26 +26,19 @@ const AppContent: React.FC = () => {
 
   useEffect(() => {
     console.log('App mounted - fetching data...');
-    
-    // Fetch featured properties (doesn't require auth)
-    dispatch(fetchFeaturedProperties())
-      .unwrap()
-      .then((data) => {
-        console.log('Featured properties fetched:', data);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch featured properties:', error);
-      });
 
-    // Also fetch regular properties to test
-    dispatch(fetchProperties({ page: 1, pageSize: 10 }))
-      .unwrap()
-      .then((data) => {
-        console.log('Properties fetched successfully:', data);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch properties:', error);
-      });
+    // No longer calling local API /api/properties/featured
+    // dispatch(fetchFeaturedProperties())...
+
+    // No longer calling local API /api/properties?page=1&pageSize=10 – listings use drock/hasdata
+    // dispatch(fetchProperties({ page: 1, pageSize: 10 }))
+    //   .unwrap()
+    //   .then((data) => {
+    //     console.log('Properties fetched successfully:', data);
+    //   })
+    //   .catch((error) => {
+    //     console.error('Failed to fetch properties:', error);
+    //   });
   }, [dispatch]);
 
   useEffect(() => {

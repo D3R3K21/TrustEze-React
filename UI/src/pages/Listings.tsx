@@ -4,7 +4,7 @@ import { fetchDrockSearch } from '../store/slices/drockSearchSlice';
 import PropertyCard from '../components/PropertyCard';
 import ListingsHeader from '../components/ListingsHeader';
 import PropertyMap from '../components/PropertyMap';
-import PropertyModal from '../components/PropertyModal';
+import InvestmentModal from '../components/InvestmentModal';
 import { Box } from '@mui/material';
 import './Listings.css';
 import { Property as PropertyType } from '../types';
@@ -145,9 +145,9 @@ const Listings: React.FC = () => {
           )}
         </Box>
       </div>
-      <PropertyModal
+      <InvestmentModal
         property={selectedProperty}
-        isOpen={isModalOpen}
+        open={isModalOpen}
         onClose={handleCloseModal}
       />
     </div>
