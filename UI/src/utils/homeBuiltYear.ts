@@ -74,3 +74,43 @@ export function getAvailableSharesPercent(seed: string): number {
   const index = Math.abs(hash) % AVAILABLE_SHARES_RANGE;
   return MIN_AVAILABLE_SHARES_PERCENT + index;
 }
+
+const MIN_ANNUAL_YIELD_PERCENT = 3;
+const MAX_ANNUAL_YIELD_PERCENT = 12;
+const ANNUAL_YIELD_RANGE = MAX_ANNUAL_YIELD_PERCENT - MIN_ANNUAL_YIELD_PERCENT + 1;
+
+/**
+ * Returns a deterministic "random" percentage between 3 and 12 for a given seed (e.g. property id).
+ * Use for "Annual Yield" display in map pin popup.
+ */
+export function getAnnualYieldPercent(seed: string): number {
+  let hash = 0;
+  const str = String(seed) + "annualyield";
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+  const index = Math.abs(hash) % ANNUAL_YIELD_RANGE;
+  return MIN_ANNUAL_YIELD_PERCENT + index;
+}
+
+const MIN_PROJECTED_ROI = 9;
+const MAX_PROJECTED_ROI = 15;
+const PROJECTED_ROI_RANGE = MAX_PROJECTED_ROI - MIN_PROJECTED_ROI + 1;
+
+/**
+ * Returns a deterministic "random" percentage between 9 and 15 for a given seed (e.g. property id).
+ * Use for "Projected ROI" on property cards.
+ */
+export function getProjectedRoiPercent(seed: string): number {
+  let hash = 0;
+  const str = String(seed) + "projectedroi";
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+  const index = Math.abs(hash) % PROJECTED_ROI_RANGE;
+  return MIN_PROJECTED_ROI + index;
+}

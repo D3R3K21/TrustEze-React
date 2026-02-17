@@ -2,6 +2,7 @@ import React from 'react';
 import { Property } from '../types';
 import { getRiskRating, getRiskLabel, getRiskColor } from '../utils/riskRating';
 import { getPricePerShareLabel } from '../utils/pricePerShare';
+import { getProjectedRoiPercent, getAvailableSharesPercent, getAnnualYieldPercent } from '../utils/homeBuiltYear';
 import './PropertyCard.css';
 
 /** Zillow/hasdata raw property shape (optional – card works with normalized Property too). */
@@ -137,32 +138,22 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
 
       <div className="property-content">
         <h3 className="property-title">{d.title}</h3>
-        <p className="property-address">
-          {[d.addressLine || d.title, d.city, d.state, d.zipCode].filter(Boolean).join(', ')}
-        </p>
 
-        <div className="property-details">
-          <div className="property-specs">
-            {/* Bedrooms/bathrooms commented out – data does not provide this info
-            <span className="spec">
-              <span className="spec-icon">🛏️</span>
-              {d.bedrooms > 0 ? `${d.bedrooms} bed` : '— bed'}
-            </span>
-            <span className="spec">
-              <span className="spec-icon">🚿</span>
-              {d.bathrooms > 0 ? `${d.bathrooms} bath` : '— bath'}
-            </span>
-            */}
-            {d.squareFeet > 0 && (
-              <span className="spec">
-                <span className="spec-icon">📐</span>
-                {d.squareFeet.toLocaleString()} sq ft
-              </span>
-            )}
+        <div className="property-metric-cards">
+          <div className="property-metric-card">
+            <span className="property-metric-label">Projected ROI</span>
+            <span className="property-metric-value">{getProjectedRoiPercent(d.id)}%</span>
+            <span className="property-metric-subtext">+2.1% vs last yr</span>
           </div>
-
-          <div className="property-type">
-            {d.propertyTypeDisplay}
+          <div className="property-metric-card">
+            <span className="property-metric-label">Available Shares</span>
+            <span className="property-metric-value">{getAvailableSharesPercent(d.id)}%</span>
+            <span className="property-metric-subtext">Stable</span>
+          </div>
+          <div className="property-metric-card">
+            <span className="property-metric-label">Annual Yield</span>
+            <span className="property-metric-value">{getAnnualYieldPercent(d.id)}%</span>
+            <span className="property-metric-subtext">+1.4% growth</span>
           </div>
         </div>
 

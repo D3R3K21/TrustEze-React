@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import { Property } from '../types';
 import { colors } from '../theme';
 import { getRiskRating, getRiskColor, getRiskLabel } from '../utils/riskRating';
-import { getAvailableSharesPercent } from '../utils/homeBuiltYear';
+import { getAvailableSharesPercent, getOccupantSharePercent, getAnnualYieldPercent } from '../utils/homeBuiltYear';
 
 // Fix for default marker icons in React/Webpack
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -57,10 +57,11 @@ const MapCenter: React.FC<{ center: [number, number] }> = ({ center }) => {
 
 const TOTAL_SHARES = 10000;
 
-// Chip styles matching InvestmentModal (price/share chip)
+// Chip styles matching InvestmentModal. Chips stretch to fill grid cell for even widths.
 const pricePerShareChipStyle: React.CSSProperties = {
-  display: 'inline-flex',
+  display: 'flex',
   alignItems: 'center',
+  justifyContent: 'center',
   gap: '4px',
   padding: '4px 10px',
   borderRadius: '16px',
@@ -70,6 +71,9 @@ const pricePerShareChipStyle: React.CSSProperties = {
   color: colors.primary,
   border: `1px solid ${colors.primary}4d`,
   whiteSpace: 'nowrap',
+  minWidth: 0,
+  width: '100%',
+  boxSizing: 'border-box',
 };
 
 // Popup body: property info + image, then 2x2 grid (View full details | Risk | Per share | % available)
@@ -80,6 +84,8 @@ const PopupContent: React.FC<{
 }> = ({ property, onClose, onPropertyClick }) => {
   const pricePerShare = property.price / TOTAL_SHARES;
   const availablePercent = getAvailableSharesPercent(property.id);
+  const occupantSharePercent = getOccupantSharePercent(property.id);
+  const annualYieldPercent = getAnnualYieldPercent(property.id);
   const riskLevel = getRiskRating(property.id);
   const riskColor = getRiskColor(riskLevel);
 
@@ -94,32 +100,55 @@ const PopupContent: React.FC<{
       }}
       onMouseLeave={onClose}
     >
-      {/* Property info + image */}
-      <div style={{ display: 'flex', gap: '12px' }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <strong style={{ fontSize: '14px', display: 'block', marginBottom: '6px' }}>
-            {property.title}
-          </strong>
-          <span style={{ fontSize: '12px', color: '#666', display: 'block', marginBottom: '4px' }}>
-            {property.address}, {property.city}, {property.state}
+      {/* Risk at very top, centered */}
+      <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+        <span
+          style={{
+            padding: '4px 10px',
+            borderRadius: '4px',
+            fontSize: '0.75rem',
+            fontWeight: 700,
+            letterSpacing: '0.05em',
+            textTransform: 'uppercase',
+            backgroundColor: `${riskColor}22`,
+            color: riskColor,
+            border: `1.5px solid ${riskColor}`,
+          }}
+        >
+          {getRiskLabel(riskLevel)}
+        </span>
+      </div>
+      {/* Row: left = chips; right = photo */}
+      <div
+        style={{
+          display: 'flex',
+          gap: '12px',
+          alignItems: 'flex-start',
+        }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1, minWidth: 0 }}>
+          <span style={{ ...pricePerShareChipStyle }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}>
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+              <polyline points="17 6 23 6 23 12" />
+            </svg>
+            ${pricePerShare.toFixed(2)} / share
           </span>
-          <span style={{ fontSize: '16px', fontWeight: 'bold', color: colors.primary, display: 'block', marginBottom: '6px' }}>
-            ${property.price.toLocaleString()}
+          <span style={{ ...pricePerShareChipStyle, backgroundColor: `${colors.primary}26` }}>
+            {availablePercent}% available
           </span>
-          <div style={{ fontSize: '12px', color: '#666', marginTop: '4px', paddingTop: '4px', borderTop: '1px solid #e0e0e0' }}>
-            <span>{property.bedrooms} bed</span> • <span>{property.bathrooms} bath</span> • <span>{property.squareFeet.toLocaleString()} sq ft</span>
-          </div>
-          {property.description && (
-            <p style={{ fontSize: '11px', color: '#888', marginTop: '6px', marginBottom: 0 }}>
-              {property.description.substring(0, 100)}{property.description.length > 100 ? '...' : ''}
-            </p>
-          )}
+          <span style={{ ...pricePerShareChipStyle, backgroundColor: `${colors.primary}26` }}>
+            Occupant Share {occupantSharePercent}%
+          </span>
+          <span style={{ ...pricePerShareChipStyle, backgroundColor: `${colors.primary}26` }}>
+            Annual Yield {annualYieldPercent}%
+          </span>
         </div>
         {property.images && property.images.length > 0 && (
           <div
             style={{
-              width: '120px',
-              height: '120px',
+              width: '160px',
+              height: '160px',
               flexShrink: 0,
               borderRadius: '6px',
               overflow: 'hidden',
@@ -139,75 +168,46 @@ const PopupContent: React.FC<{
         )}
       </div>
 
-      {/* 2x2 grid: top-left View full details, top-right Risk, bottom-left Per share, bottom-right % available */}
+      {/* Bottom: address and price left, View full details button right */}
       <div
         style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gridTemplateRows: 'auto auto',
-          gap: '8px',
-          alignItems: 'center',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          gap: '12px',
+          width: '100%',
         }}
       >
-        <div style={{ justifySelf: 'start' }}>
-          {onPropertyClick && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onPropertyClick(property);
-              }}
-              style={{
-                padding: '8px 12px',
-                fontSize: '13px',
-                fontWeight: 600,
-                color: '#fff',
-                backgroundColor: colors.primary,
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-              }}
-            >
-              View full details
-            </button>
-          )}
+        <div style={{ minWidth: 0 }}>
+          <strong style={{ fontSize: '14px', display: 'block', marginBottom: '4px' }}>
+            {property.title}
+          </strong>
+          <span style={{ fontSize: '16px', fontWeight: 'bold', color: colors.primary, display: 'block' }}>
+            ${property.price.toLocaleString()}
+          </span>
         </div>
-        <div style={{ justifySelf: 'end' }}>
-          <span
+        {onPropertyClick && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onPropertyClick(property);
+            }}
             style={{
-              padding: '4px 10px',
-              borderRadius: '4px',
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase',
-              backgroundColor: `${riskColor}22`,
-              color: riskColor,
-              border: `1.5px solid ${riskColor}`,
+              flexShrink: 0,
+              padding: '8px 12px',
+              fontSize: '13px',
+              fontWeight: 600,
+              color: '#fff',
+              backgroundColor: colors.primary,
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
             }}
           >
-            {getRiskLabel(riskLevel)}
-          </span>
-        </div>
-        <div style={{ justifySelf: 'start' }}>
-          <span style={pricePerShareChipStyle}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}>
-              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-              <polyline points="17 6 23 6 23 12" />
-            </svg>
-            ${pricePerShare.toFixed(2)} / share
-          </span>
-        </div>
-        <div style={{ justifySelf: 'end' }}>
-          <span
-            style={{
-              ...pricePerShareChipStyle,
-              backgroundColor: `${colors.primary}26`,
-            }}
-          >
-            {availablePercent}% available
-          </span>
-        </div>
+            View full details
+          </button>
+        )}
       </div>
     </div>
   );
