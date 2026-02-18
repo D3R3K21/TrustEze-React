@@ -1,27 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
   Box,
   Typography,
-  TextField,
   Button,
-  Select,
-  MenuItem,
-  FormControl,
 } from '@mui/material';
-import { Search as SearchIcon } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { logoutUser } from '../store/slices/authSlice';
-import { colors } from '../theme';
+import SearchFilters from './SearchFilters';
+import type { SearchFilters as SearchFiltersType } from '../types';
 import './ListingsHeader.css';
 
-const ListingsHeader: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [priceFilter, setPriceFilter] = useState('');
-  const [bedsBathsFilter, setBedsBathsFilter] = useState('');
-  const [homeTypeFilter, setHomeTypeFilter] = useState('');
+export interface ListingsHeaderProps {
+  /** When provided, the new horizontal filter bar (SearchFilters) is shown and drives search. */
+  filters?: SearchFiltersType;
+  onFiltersChange?: (filters: SearchFiltersType) => void;
+  onSearch?: () => void;
+  onClear?: () => void;
+}
+
+const ListingsHeader: React.FC<ListingsHeaderProps> = ({
+  filters = {},
+  onFiltersChange = () => {},
+  onSearch = () => {},
+  onClear = () => {},
+}) => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -46,12 +51,6 @@ const ListingsHeader: React.FC = () => {
     }
     
     return '/dashboard';
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle search logic here
-    console.log('Search query:', searchQuery);
   };
 
   const handleLogout = async () => {
@@ -240,222 +239,14 @@ const ListingsHeader: React.FC = () => {
           </Box>
         </Box>
 
-        {/* Bottom Section: Search and Filters */}
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-            padding: '1rem 2rem',
-            flexWrap: { xs: 'wrap', md: 'nowrap' },
-          }}
-        >
-          {/* Search Input */}
-          <TextField
-            fullWidth
-            placeholder="Search for homes"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') {
-                handleSearch(e);
-              }
-            }}
-            sx={{
-              flex: { xs: '1 1 100%', md: '1 1 auto' },
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: '#f0f0f0',
-                borderRadius: '8px',
-                '& fieldset': {
-                  borderColor: '#d0d0d0',
-                },
-                '&:hover fieldset': {
-                  borderColor: '#b0b0b0',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: colors.primary,
-                },
-              },
-            }}
+        {/* Bottom Section: Horizontal filter bar (SearchFilters) */}
+        <Box sx={{ padding: '1rem 2rem' }}>
+          <SearchFilters
+            filters={filters}
+            onFiltersChange={onFiltersChange}
+            onSearch={onSearch}
+            onClear={onClear}
           />
-
-          {/* Filter Buttons */}
-          <Button
-            variant="contained"
-            onClick={handleSearch}
-            startIcon={<SearchIcon />}
-            sx={{
-              backgroundColor: colors.primary,
-              color: '#fff',
-              textTransform: 'none',
-              borderRadius: '8px',
-              padding: '0.75rem 1.5rem',
-              minWidth: '140px',
-              height: '48px',
-              fontWeight: 500,
-              '&:hover': {
-                backgroundColor: colors.primaryHover,
-              },
-            }}
-          >
-            Search
-          </Button>
-
-          <FormControl
-            sx={{
-              minWidth: { xs: '100%', sm: '140px' },
-              height: '48px',
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: colors.primary,
-                borderRadius: '8px',
-                color: '#fff',
-                height: '48px',
-                '& fieldset': {
-                  borderColor: colors.primary,
-                },
-                '&:hover fieldset': {
-                  borderColor: colors.primaryHover,
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: colors.primaryHover,
-                },
-              },
-            }}
-          >
-            <Select
-              value={priceFilter}
-              onChange={(e) => setPriceFilter(e.target.value)}
-              displayEmpty
-              renderValue={(selected) => {
-                if (!selected) {
-                  return <span style={{ color: '#fff' }}>Price</span>;
-                }
-                return <span style={{ color: '#fff' }}>{selected}</span>;
-              }}
-              sx={{
-                color: '#fff',
-                '& .MuiSelect-icon': {
-                  color: '#fff',
-                },
-              }}
-            >
-              <MenuItem value="0-200k">$0 - $200k</MenuItem>
-              <MenuItem value="200k-400k">$200k - $400k</MenuItem>
-              <MenuItem value="400k-600k">$400k - $600k</MenuItem>
-              <MenuItem value="600k-800k">$600k - $800k</MenuItem>
-              <MenuItem value="800k+">$800k+</MenuItem>
-            </Select>
-          </FormControl>
-
-          <FormControl
-            sx={{
-              minWidth: { xs: '100%', sm: '160px' },
-              height: '48px',
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: colors.primary,
-                borderRadius: '8px',
-                color: '#fff',
-                height: '48px',
-                '& fieldset': {
-                  borderColor: colors.primary,
-                },
-                '&:hover fieldset': {
-                  borderColor: colors.primaryHover,
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: colors.primaryHover,
-                },
-              },
-            }}
-          >
-            <Select
-              value={bedsBathsFilter}
-              onChange={(e) => setBedsBathsFilter(e.target.value)}
-              displayEmpty
-              renderValue={(selected) => {
-                if (!selected) {
-                  return <span style={{ color: '#fff' }}>Beds/Baths</span>;
-                }
-                return <span style={{ color: '#fff' }}>{selected}</span>;
-              }}
-              sx={{
-                color: '#fff',
-                '& .MuiSelect-icon': {
-                  color: '#fff',
-                },
-              }}
-            >
-              <MenuItem value="1bed1bath">1 bed / 1 bath</MenuItem>
-              <MenuItem value="2bed2bath">2 bed / 2 bath</MenuItem>
-              <MenuItem value="3bed2bath">3 bed / 2 bath</MenuItem>
-              <MenuItem value="4bed3bath">4 bed / 3 bath</MenuItem>
-              <MenuItem value="5bed+">5+ bed</MenuItem>
-            </Select>
-          </FormControl>
-
-          <FormControl
-            sx={{
-              minWidth: { xs: '100%', sm: '150px' },
-              height: '48px',
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: colors.primary,
-                borderRadius: '8px',
-                color: '#fff',
-                height: '48px',
-                '& fieldset': {
-                  borderColor: colors.primary,
-                },
-                '&:hover fieldset': {
-                  borderColor: colors.primaryHover,
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: colors.primaryHover,
-                },
-              },
-            }}
-          >
-            <Select
-              value={homeTypeFilter}
-              onChange={(e) => setHomeTypeFilter(e.target.value)}
-              displayEmpty
-              renderValue={(selected) => {
-                if (!selected) {
-                  return <span style={{ color: '#fff' }}>Home Type</span>;
-                }
-                return <span style={{ color: '#fff' }}>{selected}</span>;
-              }}
-              sx={{
-                color: '#fff',
-                '& .MuiSelect-icon': {
-                  color: '#fff',
-                },
-              }}
-            >
-              <MenuItem value="house">House</MenuItem>
-              <MenuItem value="condo">Condo</MenuItem>
-              <MenuItem value="townhouse">Townhouse</MenuItem>
-              <MenuItem value="apartment">Apartment</MenuItem>
-            </Select>
-          </FormControl>
-
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: colors.primary,
-              color: '#fff',
-              textTransform: 'none',
-              borderRadius: '8px',
-              padding: '0.75rem 1.5rem',
-              minWidth: '140px',
-              height: '48px',
-              fontWeight: 500,
-              '&:hover': {
-                backgroundColor: colors.primaryHover,
-              },
-            }}
-          >
-            More
-          </Button>
         </Box>
       </Toolbar>
     </AppBar>

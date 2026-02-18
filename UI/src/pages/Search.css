@@ -28,15 +28,13 @@
 }
 
 .search-layout {
-  display: grid;
-  grid-template-columns: 350px 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 2rem;
-  align-items: start;
 }
 
-.filters-sidebar {
-  position: sticky;
-  top: 100px;
+.search-filters-wrap {
+  width: 100%;
 }
 
 .results-section {

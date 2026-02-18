@@ -7,7 +7,21 @@ import PropertyMap from '../components/PropertyMap';
 import InvestmentModal from '../components/InvestmentModal';
 import { Box } from '@mui/material';
 import './Listings.css';
-import { Property as PropertyType } from '../types';
+import { Property as PropertyType, SearchFilters as SearchFiltersType } from '../types';
+
+const DEFAULT_KEYWORD = 'scottsdale';
+const DEFAULT_PRICE_MIN = 100000;
+const DEFAULT_PRICE_MAX = 500000;
+
+function toDrockParams(filters: SearchFiltersType) {
+  return {
+    Keyword: filters.keyword || DEFAULT_KEYWORD,
+    Type: 'forSale',
+    'Price.Min': filters.minPrice ?? DEFAULT_PRICE_MIN,
+    'Price.Max': filters.maxPrice ?? DEFAULT_PRICE_MAX,
+    Page: 1,
+  };
+}
 
 const Listings: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -18,29 +32,24 @@ const Listings: React.FC = () => {
   } = useAppSelector((state) => state.drockSearch);
   const [selectedProperty, setSelectedProperty] = useState<PropertyType | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchFilters, setSearchFilters] = useState<SearchFiltersType>({});
   const hasFetchedDrockRef = useRef(false);
 
   useEffect(() => {
     if (hasFetchedDrockRef.current) return;
     hasFetchedDrockRef.current = true;
-    dispatch(
-      fetchDrockSearch({
-        Keyword: 'scottsdale',
-        Type: 'forSale',
-        'Price.Min': 100000,
-        'Price.Max': 500000,
-        // 'Beds.Min': 2,
-        // 'Beds.Max': 6,
-        // 'Baths.Min': 2,
-        // 'Baths.Max': 4,
-        // 'YearBuilt.Min': 1995,
-        // 'YearBuilt.Max': 2025,
-        // 'SquareFeet.Min': 1200,
-        // 'SquareFeet.Max': 4000,
-        Page: 1,
-      })
-    );
+    dispatch(fetchDrockSearch(toDrockParams({})));
   }, [dispatch]);
+
+  const handleFiltersChange = (filters: SearchFiltersType) => {
+    setSearchFilters(filters);
+    dispatch(fetchDrockSearch(toDrockParams(filters)));
+  };
+
+  const handleClearFilters = () => {
+    setSearchFilters({});
+    dispatch(fetchDrockSearch(toDrockParams({})));
+  };
 
   const handlePropertyClick = (property: PropertyType) => {
     setSelectedProperty(property);
@@ -54,7 +63,12 @@ const Listings: React.FC = () => {
 
   return (
     <div className="listings-page">
-      <ListingsHeader />
+      <ListingsHeader
+        filters={searchFilters}
+        onFiltersChange={handleFiltersChange}
+        onSearch={() => dispatch(fetchDrockSearch(toDrockParams(searchFilters)))}
+        onClear={handleClearFilters}
+      />
       <div className="container" style={{ paddingTop: 0, paddingBottom: 0 }}>
         <Box sx={{ mt: 0 }}>
           {drockSearchLoading && drockSearchResults.length === 0 ? (

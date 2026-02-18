@@ -3,6 +3,7 @@ import { SearchFilters as SearchFiltersType, Property } from '../types';
 import SearchFilters from '../components/SearchFilters';
 import PropertyCard from '../components/PropertyCard';
 import { mockProperties } from '../data/mockData';
+import { getRiskRating } from '../utils/riskRating';
 import './Search.css';
 
 const Search: React.FC = () => {
@@ -14,24 +15,37 @@ const Search: React.FC = () => {
   // Filter properties based on current filters
   const filterProperties = (properties: Property[], currentFilters: SearchFiltersType): Property[] => {
     return properties.filter(property => {
-      // Price filter
-      if (currentFilters.minPrice && property.price < currentFilters.minPrice) return false;
-      if (currentFilters.maxPrice && property.price > currentFilters.maxPrice) return false;
+      // Keyword search (title, address, city)
+      if (currentFilters.keyword) {
+        const k = currentFilters.keyword.toLowerCase();
+        const match =
+          property.title?.toLowerCase().includes(k) ||
+          property.address?.toLowerCase().includes(k) ||
+          property.city?.toLowerCase().includes(k);
+        if (!match) return false;
+      }
 
-      // Bedrooms filter
+      // States filter (multi)
+      if (currentFilters.states && currentFilters.states.length > 0) {
+        if (!currentFilters.states.includes(property.state)) return false;
+      }
+
+      // Risk filter
+      if (currentFilters.riskLevels && currentFilters.riskLevels.length > 0) {
+        const level = getRiskRating(property.id);
+        if (!currentFilters.riskLevels.includes(level)) return false;
+      }
+
+      // Price filter (min/max from share price or legacy)
+      if (currentFilters.minPrice != null && property.price < currentFilters.minPrice) return false;
+      if (currentFilters.maxPrice != null && property.price > currentFilters.maxPrice) return false;
+
+      // Legacy filters (still supported)
       if (currentFilters.bedrooms && property.bedrooms < currentFilters.bedrooms) return false;
-
-      // Bathrooms filter
       if (currentFilters.bathrooms && property.bathrooms < currentFilters.bathrooms) return false;
-
-      // Square feet filter
       if (currentFilters.minSquareFeet && property.squareFeet < currentFilters.minSquareFeet) return false;
       if (currentFilters.maxSquareFeet && property.squareFeet > currentFilters.maxSquareFeet) return false;
-
-      // Property type filter
       if (currentFilters.propertyType && property.propertyType !== currentFilters.propertyType) return false;
-
-      // Location filters
       if (currentFilters.city && !property.city.toLowerCase().includes(currentFilters.city.toLowerCase())) return false;
       if (currentFilters.state && !property.state.toLowerCase().includes(currentFilters.state.toLowerCase())) return false;
       if (currentFilters.zipCode && !property.zipCode.includes(currentFilters.zipCode)) return false;
@@ -95,7 +109,7 @@ const Search: React.FC = () => {
         </div>
 
         <div className="search-layout">
-          <div className="filters-sidebar">
+          <div className="search-filters-wrap">
             <SearchFilters
               filters={filters}
               onFiltersChange={handleFiltersChange}

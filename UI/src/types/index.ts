@@ -54,6 +54,9 @@ export interface Property {
   longitude?: number;
 }
 
+/** Risk level for filter (matches utils/riskRating). */
+export type SearchFilterRiskLevel = 'high' | 'medium' | 'low';
+
 export interface SearchFilters {
   minPrice?: number;
   maxPrice?: number;
@@ -65,6 +68,12 @@ export interface SearchFilters {
   city?: string;
   state?: string;
   zipCode?: string;
+  /** Keyword search (title, address, city). */
+  keyword?: string;
+  /** Multi-state filter. */
+  states?: string[];
+  /** Risk levels to include. */
+  riskLevels?: SearchFilterRiskLevel[];
 }
 
 export interface AuthContextType {
