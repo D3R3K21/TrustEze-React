@@ -14,6 +14,7 @@ import {
 import { Search as SearchIcon } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { logoutUser } from '../store/slices/authSlice';
+import { colors } from '../theme';
 import './ListingsHeader.css';
 
 const ListingsHeader: React.FC = () => {
@@ -272,7 +273,7 @@ const ListingsHeader: React.FC = () => {
                   borderColor: '#b0b0b0',
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: '#8b7355',
+                  borderColor: colors.primary,
                 },
               },
             }}
@@ -284,7 +285,7 @@ const ListingsHeader: React.FC = () => {
             onClick={handleSearch}
             startIcon={<SearchIcon />}
             sx={{
-              backgroundColor: '#8b7355',
+              backgroundColor: colors.primary,
               color: '#fff',
               textTransform: 'none',
               borderRadius: '8px',
@@ -293,7 +294,7 @@ const ListingsHeader: React.FC = () => {
               height: '48px',
               fontWeight: 500,
               '&:hover': {
-                backgroundColor: '#7a6344',
+                backgroundColor: colors.primaryHover,
               },
             }}
           >
@@ -305,18 +306,18 @@ const ListingsHeader: React.FC = () => {
               minWidth: { xs: '100%', sm: '140px' },
               height: '48px',
               '& .MuiOutlinedInput-root': {
-                backgroundColor: '#8b7355',
+                backgroundColor: colors.primary,
                 borderRadius: '8px',
                 color: '#fff',
                 height: '48px',
                 '& fieldset': {
-                  borderColor: '#8b7355',
+                  borderColor: colors.primary,
                 },
                 '&:hover fieldset': {
-                  borderColor: '#7a6344',
+                  borderColor: colors.primaryHover,
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: '#7a6344',
+                  borderColor: colors.primaryHover,
                 },
               },
             }}
@@ -351,18 +352,18 @@ const ListingsHeader: React.FC = () => {
               minWidth: { xs: '100%', sm: '160px' },
               height: '48px',
               '& .MuiOutlinedInput-root': {
-                backgroundColor: '#8b7355',
+                backgroundColor: colors.primary,
                 borderRadius: '8px',
                 color: '#fff',
                 height: '48px',
                 '& fieldset': {
-                  borderColor: '#8b7355',
+                  borderColor: colors.primary,
                 },
                 '&:hover fieldset': {
-                  borderColor: '#7a6344',
+                  borderColor: colors.primaryHover,
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: '#7a6344',
+                  borderColor: colors.primaryHover,
                 },
               },
             }}
@@ -397,18 +398,18 @@ const ListingsHeader: React.FC = () => {
               minWidth: { xs: '100%', sm: '150px' },
               height: '48px',
               '& .MuiOutlinedInput-root': {
-                backgroundColor: '#8b7355',
+                backgroundColor: colors.primary,
                 borderRadius: '8px',
                 color: '#fff',
                 height: '48px',
                 '& fieldset': {
-                  borderColor: '#8b7355',
+                  borderColor: colors.primary,
                 },
                 '&:hover fieldset': {
-                  borderColor: '#7a6344',
+                  borderColor: colors.primaryHover,
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: '#7a6344',
+                  borderColor: colors.primaryHover,
                 },
               },
             }}
@@ -440,7 +441,7 @@ const ListingsHeader: React.FC = () => {
           <Button
             variant="contained"
             sx={{
-              backgroundColor: '#8b7355',
+              backgroundColor: colors.primary,
               color: '#fff',
               textTransform: 'none',
               borderRadius: '8px',
@@ -449,7 +450,7 @@ const ListingsHeader: React.FC = () => {
               height: '48px',
               fontWeight: 500,
               '&:hover': {
-                backgroundColor: '#7a6344',
+                backgroundColor: colors.primaryHover,
               },
             }}
           >

@@ -1,89 +1,207 @@
 import React from 'react';
 import { Property } from '../types';
+import { getRiskRating, getRiskLabel, getRiskColor } from '../utils/riskRating';
+import { getPricePerShareLabel } from '../utils/pricePerShare';
+import { getProjectedRoiPercent, getAvailableSharesPercent, getAnnualYieldPercent } from '../utils/homeBuiltYear';
 import './PropertyCard.css';
 
+/** Zillow/hasdata raw property shape (optional – card works with normalized Property too). */
+export interface ZillowPropertyShape {
+  id: string;
+  url?: string;
+  homeType?: string;
+  image?: string;
+  status?: string;
+  currency?: string;
+  price: number;
+  daysOnZillow?: number;
+  area?: number;
+  lotAreaValue?: number;
+  lotAreaUnits?: string | null;
+  addressRaw?: string;
+  address?: { street?: string; city?: string; state?: string; zipcode?: string };
+  latitude?: number;
+  longitude?: number;
+  photos?: string[];
+  bedrooms?: number;
+  bathrooms?: number;
+  beds?: number;
+  baths?: number;
+}
+
+type PropertyCardProperty = Property | ZillowPropertyShape;
+
+function isZillowShape(p: PropertyCardProperty): p is ZillowPropertyShape {
+  return 'addressRaw' in p || ('address' in p && typeof (p as ZillowPropertyShape).address === 'object');
+}
+
+function getDisplayValues(property: PropertyCardProperty) {
+  if (isZillowShape(property)) {
+    const addr = property.address;
+    const street = addr?.street ?? '';
+    const city = addr?.city ?? '';
+    const state = addr?.state ?? '';
+    const zipcode = addr?.zipcode ?? '';
+    const addressLine = property.addressRaw ?? ([street, city, state, zipcode].filter(Boolean).join(', ') || property.id);
+    const status = (property.status ?? '').toUpperCase();
+    const isForSale = status === 'FOR_SALE';
+    const isForRent = status === 'FOR_RENT';
+    const imageUrl = property.image ?? property.photos?.[0];
+    const homeType = (property.homeType ?? 'SINGLE_FAMILY').replace(/_/g, ' ').toLowerCase();
+    const propertyTypeDisplay = homeType.replace(/\b\w/g, (c) => c.toUpperCase());
+    return {
+      id: property.id,
+      imageUrl,
+      title: addressLine,
+      addressLine,
+      city,
+      state,
+      zipCode: zipcode,
+      price: property.price,
+      isForSale,
+      isForRent,
+      bedrooms: property.bedrooms ?? property.beds ?? 0,
+      bathrooms: property.bathrooms ?? property.baths ?? 0,
+      squareFeet: property.area ?? 0,
+      lotAreaValue: property.lotAreaValue,
+      lotAreaUnits: property.lotAreaUnits ?? 'sqft',
+      propertyTypeDisplay,
+      description: '',
+      features: [] as string[],
+      realtorName: '',
+      daysOnZillow: property.daysOnZillow,
+      url: property.url,
+    };
+  }
+  const p = property as Property;
+  const propertyTypeDisplay = p.propertyType
+    ? `${p.propertyType.charAt(0).toUpperCase()}${p.propertyType.slice(1)}`
+    : '';
+  return {
+    id: p.id,
+    imageUrl: p.images?.[0],
+    title: p.title,
+    addressLine: [p.address, p.city, p.state, p.zipCode].filter(Boolean).join(', '),
+    city: p.city,
+    state: p.state,
+    zipCode: p.zipCode,
+    price: p.price,
+    isForSale: p.isForSale,
+    isForRent: p.isForRent,
+    bedrooms: p.bedrooms,
+    bathrooms: p.bathrooms,
+    squareFeet: p.squareFeet,
+    lotAreaValue: p.lotSize,
+    lotAreaUnits: 'sqft' as string,
+    propertyTypeDisplay,
+    description: p.description ?? '',
+    features: p.features ?? [],
+    realtorName: p.realtor?.name ?? '',
+    daysOnZillow: undefined,
+    url: undefined,
+  };
+}
+
 interface PropertyCardProps {
-  property: Property;
+  property: PropertyCardProperty;
   onClick?: () => void;
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ property, onClick }) => {
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
+  const d = getDisplayValues(property);
 
   return (
     <div className="property-card" onClick={onClick}>
       <div className="property-image-container">
-        <img 
-          src={property.images[0]} 
-          alt={property.title}
-          className="property-image"
-        />
+        {d.imageUrl ? (
+          <img
+            src={d.imageUrl}
+            alt={d.title}
+            className="property-image"
+          />
+        ) : (
+          <div className="property-image property-image-placeholder" aria-hidden>No image</div>
+        )}
         <div className="property-price">
-          {formatPrice(property.price)}
+          {getPricePerShareLabel(d.id)}
         </div>
-        <div className="property-status">
-          {property.isForSale ? 'For Sale' : 'For Rent'}
+        <div
+          className="property-risk-badge"
+          style={{
+            backgroundColor: getRiskColor(getRiskRating(d.id)),
+            color: getRiskRating(d.id) === 'medium' ? '#1a1a1a' : '#fff',
+          }}
+        >
+          {getRiskLabel(getRiskRating(d.id))}
         </div>
       </div>
-      
+
       <div className="property-content">
-        <h3 className="property-title">{property.title}</h3>
-        <p className="property-address">
-          {property.address}, {property.city}, {property.state} {property.zipCode}
-        </p>
-        
-        <div className="property-details">
-          <div className="property-specs">
-            <span className="spec">
-              <span className="spec-icon">🛏️</span>
-              {property.bedrooms} bed
-            </span>
-            <span className="spec">
-              <span className="spec-icon">🚿</span>
-              {property.bathrooms} bath
-            </span>
-            <span className="spec">
-              <span className="spec-icon">📐</span>
-              {property.squareFeet.toLocaleString()} sq ft
-            </span>
+        <h3 className="property-title">{d.title}</h3>
+
+        <div className="property-metric-cards">
+          <div className="property-metric-card">
+            <span className="property-metric-label">Projected ROI</span>
+            <span className="property-metric-value">{getProjectedRoiPercent(d.id)}%</span>
+            <span className="property-metric-subtext">+2.1% vs last yr</span>
           </div>
-          
-          <div className="property-type">
-            {property.propertyType.charAt(0).toUpperCase() + property.propertyType.slice(1)}
+          <div className="property-metric-card">
+            <span className="property-metric-label">Available Shares</span>
+            <span className="property-metric-value">{getAvailableSharesPercent(d.id)}%</span>
+            <span className="property-metric-subtext">Stable</span>
+          </div>
+          <div className="property-metric-card">
+            <span className="property-metric-label">Annual Yield</span>
+            <span className="property-metric-value">{getAnnualYieldPercent(d.id)}%</span>
+            <span className="property-metric-subtext">+1.4% growth</span>
           </div>
         </div>
-        
-        <p className="property-description">
-          {property.description.length > 120 
-            ? `${property.description.substring(0, 120)}...` 
-            : property.description
-          }
-        </p>
-        
+
+        {(d.daysOnZillow != null && d.daysOnZillow >= 0) && (
+          <p className="property-days-on-market">
+            {d.daysOnZillow === 0 ? 'New listing' : `${d.daysOnZillow} day${d.daysOnZillow === 1 ? '' : 's'} on Zillow`}
+          </p>
+        )}
+
+        {d.description && (
+          <p className="property-description">
+            {d.description.length > 120
+              ? `${d.description.substring(0, 120)}...`
+              : d.description}
+          </p>
+        )}
+
         <div className="property-features">
-          {property.features.slice(0, 3).map((feature, index) => (
+          {d.features.slice(0, 3).map((feature, index) => (
             <span key={index} className="feature-tag">
               {feature}
             </span>
           ))}
-          {property.features.length > 3 && (
+          {d.features.length > 3 && (
             <span className="feature-tag more">
-              +{property.features.length - 3} more
+              +{d.features.length - 3} more
             </span>
           )}
         </div>
-        
-        <div className="property-realtor">
-          <span className="realtor-label">Listed by:</span>
-          <span className="realtor-name">{property.realtor.name}</span>
-        </div>
+
+        {d.realtorName && (
+          <div className="property-realtor">
+            <span className="realtor-label">Listed by:</span>
+            <span className="realtor-name">{d.realtorName}</span>
+          </div>
+        )}
+
+        {d.url && (
+          <a
+            href={d.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="property-link"
+            onClick={(e) => e.stopPropagation()}
+          >
+            View on Zillow →
+          </a>
+        )}
       </div>
     </div>
   );

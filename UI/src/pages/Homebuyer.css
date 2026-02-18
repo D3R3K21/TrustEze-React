@@ -24,8 +24,8 @@
   --card-bg-color: #2C2C2C;
   --primary-text: #FFFFFF;
   --secondary-text: #B0B0B0;
-  --button-color: #8B7355;
-  --button-hover: #6B5A42;
+  --button-color: var(--color-primary);
+  --button-hover: var(--color-primary-hover);
 }
 
 .homebuyer-dashboard {

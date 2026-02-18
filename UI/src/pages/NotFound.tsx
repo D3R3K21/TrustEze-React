@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Typography, Box } from '@mui/material';
+import { colors } from '../theme';
 import './NotFound.css';
 
 const NotFound: React.FC = () => {
@@ -34,12 +35,12 @@ const NotFound: React.FC = () => {
             component={Link}
             to="/"
             sx={{
-              backgroundColor: '#8b7355',
+              backgroundColor: colors.primary,
               color: '#fff',
               textTransform: 'none',
               padding: '0.75rem 2rem',
               '&:hover': {
-                backgroundColor: '#7a6344',
+                backgroundColor: colors.primaryHover,
               },
             }}
           >
@@ -49,13 +50,13 @@ const NotFound: React.FC = () => {
             variant="outlined"
             onClick={() => navigate(-1)}
             sx={{
-              borderColor: '#8b7355',
-              color: '#8b7355',
+              borderColor: colors.primary,
+              color: colors.primary,
               textTransform: 'none',
               padding: '0.75rem 2rem',
               '&:hover': {
-                borderColor: '#7a6344',
-                backgroundColor: 'rgba(139, 115, 85, 0.1)',
+                borderColor: colors.primaryHover,
+                backgroundColor: `${colors.primary}1a`,
               },
             }}
           >

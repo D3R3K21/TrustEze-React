@@ -1,6 +1,7 @@
 import React from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
+import { colors } from '../theme';
 import './Investor.css';
 import ThemeToggle from '../components/ThemeToggle';
 import Panel from '../components/CommonComponents/Panel';
@@ -75,12 +76,12 @@ const Investor: React.FC = () => {
       {
         label: '20-Year Outlook',
         data: [105000, 115000, 110000, 105000, 108000, 110000, 130000, 125000, 130000, 140000],
-        borderColor: '#8B7355',
-        backgroundColor: 'rgba(139, 115, 85, 0.2)',
+        borderColor: colors.primary,
+        backgroundColor: `${colors.primary}33`,
         fill: true,
         tension: 0.1,
-        pointBackgroundColor: '#8B7355',
-        pointBorderColor: '#8B7355',
+        pointBackgroundColor: colors.primary,
+        pointBorderColor: colors.primary,
         pointRadius: 4,
       },
     ],

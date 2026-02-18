@@ -3,6 +3,9 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Property } from '../types';
+import { colors } from '../theme';
+import { getRiskRating, getRiskColor, getRiskLabel } from '../utils/riskRating';
+import { getAvailableSharesPercent, getOccupantSharePercent, getAnnualYieldPercent } from '../utils/homeBuiltYear';
 
 // Fix for default marker icons in React/Webpack
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -11,6 +14,32 @@ L.Icon.Default.mergeOptions({
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
+
+const USER_LOCATION_COLOR = '#dc2626'; // red for "you are here"
+
+/** Default pin size (matches classic Leaflet marker proportions ~25×41). */
+const PIN_WIDTH = 24;
+const PIN_HEIGHT = 41;
+
+/** Classic teardrop pin path (same shape as default Leaflet marker). */
+const PIN_PATH =
+  'M12 0C5.4 0 0 5.4 0 12c0 9 12 28 12 28s12-19 12-28C24 5.4 18.6 0 12 0zm0 17.3c-2.9 0-5.3-2.4-5.3-5.3S9.1 6.7 12 6.7s5.3 2.4 5.3 5.3-2.4 5.3-5.3 5.3z';
+
+/** Create a colored pin icon in the default Leaflet teardrop shape. */
+function createColoredIcon(color: string, scale = 1): L.DivIcon {
+  const w = PIN_WIDTH * scale;
+  const h = PIN_HEIGHT * scale;
+  return L.divIcon({
+    className: 'custom-pin',
+    html: `<div style="width:${w}px;height:${h}px;position:relative;">
+      <svg width="${w}" height="${h}" viewBox="0 0 24 41" style="display:block;filter:drop-shadow(0 2px 2px rgba(0,0,0,0.35));">
+        <path fill="${color}" stroke="white" stroke-width="1.5" d="${PIN_PATH}"/>
+      </svg>
+    </div>`,
+    iconSize: [w, h],
+    iconAnchor: [w / 2, h],
+  });
+}
 
 interface PropertyMapProps {
   properties: Property[];
@@ -24,6 +53,204 @@ const MapCenter: React.FC<{ center: [number, number] }> = ({ center }) => {
     map.setView(center, map.getZoom());
   }, [center, map]);
   return null;
+};
+
+const TOTAL_SHARES = 10000;
+
+// Chip styles matching InvestmentModal. Chips stretch to fill grid cell for even widths.
+const pricePerShareChipStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '4px',
+  padding: '4px 10px',
+  borderRadius: '16px',
+  fontSize: '0.75rem',
+  fontWeight: 700,
+  backgroundColor: `${colors.primary}1f`,
+  color: colors.primary,
+  border: `1px solid ${colors.primary}4d`,
+  whiteSpace: 'nowrap',
+  minWidth: 0,
+  width: '100%',
+  boxSizing: 'border-box',
+};
+
+// Popup body: property info + image, then 2x2 grid (View full details | Risk | Per share | % available)
+const PopupContent: React.FC<{
+  property: Property;
+  onClose: () => void;
+  onPropertyClick?: (property: Property) => void;
+}> = ({ property, onClose, onPropertyClick }) => {
+  const pricePerShare = property.price / TOTAL_SHARES;
+  const availablePercent = getAvailableSharesPercent(property.id);
+  const occupantSharePercent = getOccupantSharePercent(property.id);
+  const annualYieldPercent = getAnnualYieldPercent(property.id);
+  const riskLevel = getRiskRating(property.id);
+  const riskColor = getRiskColor(riskLevel);
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '12px',
+        minWidth: '300px',
+        maxWidth: '400px',
+      }}
+      onMouseLeave={onClose}
+    >
+      {/* Risk at very top, centered */}
+      <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+        <span
+          style={{
+            padding: '4px 10px',
+            borderRadius: '4px',
+            fontSize: '0.75rem',
+            fontWeight: 700,
+            letterSpacing: '0.05em',
+            textTransform: 'uppercase',
+            backgroundColor: `${riskColor}22`,
+            color: riskColor,
+            border: `1.5px solid ${riskColor}`,
+          }}
+        >
+          {getRiskLabel(riskLevel)}
+        </span>
+      </div>
+      {/* Row: left = chips; right = photo */}
+      <div
+        style={{
+          display: 'flex',
+          gap: '12px',
+          alignItems: 'flex-start',
+        }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1, minWidth: 0 }}>
+          <span style={{ ...pricePerShareChipStyle }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}>
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+              <polyline points="17 6 23 6 23 12" />
+            </svg>
+            ${pricePerShare.toFixed(2)} / share
+          </span>
+          <span style={{ ...pricePerShareChipStyle, backgroundColor: `${colors.primary}26` }}>
+            {availablePercent}% available
+          </span>
+          <span style={{ ...pricePerShareChipStyle, backgroundColor: `${colors.primary}26` }}>
+            Occupant Share {occupantSharePercent}%
+          </span>
+          <span style={{ ...pricePerShareChipStyle, backgroundColor: `${colors.primary}26` }}>
+            Annual Yield {annualYieldPercent}%
+          </span>
+        </div>
+        {property.images && property.images.length > 0 && (
+          <div
+            style={{
+              width: '160px',
+              height: '160px',
+              flexShrink: 0,
+              borderRadius: '6px',
+              overflow: 'hidden',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            }}
+          >
+            <img
+              src={property.images[0]}
+              alt={property.title}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Bottom: address and price left, View full details button right */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          gap: '12px',
+          width: '100%',
+        }}
+      >
+        <div style={{ minWidth: 0 }}>
+          <strong style={{ fontSize: '14px', display: 'block', marginBottom: '4px' }}>
+            {property.title}
+          </strong>
+          <span style={{ fontSize: '16px', fontWeight: 'bold', color: colors.primary, display: 'block' }}>
+            ${property.price.toLocaleString()}
+          </span>
+        </div>
+        {onPropertyClick && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onPropertyClick(property);
+            }}
+            style={{
+              flexShrink: 0,
+              padding: '8px 12px',
+              fontSize: '13px',
+              fontWeight: 600,
+              color: '#fff',
+              backgroundColor: colors.primary,
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+            }}
+          >
+            View full details
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Renders property markers; uses map to ensure only one popup open and to close on mouse leave
+const PropertyMarkers: React.FC<{
+  properties: Property[];
+  propertyCoordinates: Map<string, [number, number]>;
+  onPropertyClick?: (property: Property) => void;
+}> = ({ properties, propertyCoordinates, onPropertyClick }) => {
+  const map = useMap();
+  return (
+    <>
+      {properties.map((property) => {
+        const coordinates = propertyCoordinates.get(property.id);
+        if (!coordinates) return null;
+        const riskLevel = getRiskRating(property.id);
+        const pinColor = getRiskColor(riskLevel);
+        return (
+          <Marker
+            key={property.id}
+            position={coordinates}
+            icon={createColoredIcon(pinColor)}
+            eventHandlers={{
+              click: (e) => {
+                map.closePopup();
+                e.target.openPopup();
+              },
+            }}
+          >
+            <Popup closeOnClick={false} autoClose={false} closeButton={true}>
+              <PopupContent
+                property={property}
+                onClose={() => map.closePopup()}
+                onPropertyClick={onPropertyClick}
+              />
+            </Popup>
+          </Marker>
+        );
+      })}
+    </>
+  );
 };
 
 const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }) => {
@@ -157,6 +384,12 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+      <style>{`
+        .leaflet-marker-icon.custom-pin {
+          background: transparent !important;
+          border: none !important;
+        }
+      `}</style>
       {isLoadingLocation && !locationError && (
         <div
           style={{
@@ -258,96 +491,19 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ properties, onPropertyClick }
         
         {/* User location marker */}
         {userLocation && (
-          <Marker position={userLocation}>
+          <Marker position={userLocation} icon={createColoredIcon(USER_LOCATION_COLOR, 1.15)}>
             <Popup>
               <strong>Your Location</strong>
             </Popup>
           </Marker>
         )}
 
-        {/* Property markers */}
-        {properties.map((property) => {
-          const coordinates = propertyCoordinates.get(property.id);
-          if (!coordinates) return null;
-
-          return (
-            <Marker 
-              key={property.id} 
-              position={coordinates}
-              eventHandlers={{
-                mouseover: (e) => {
-                  const marker = e.target;
-                  marker.openPopup();
-                },
-                mouseout: (e) => {
-                  const marker = e.target;
-                  marker.closePopup();
-                },
-                click: () => {
-                  if (onPropertyClick) {
-                    onPropertyClick(property);
-                  }
-                }
-              }}
-            >
-              <Popup 
-                closeOnClick={false}
-                autoClose={false}
-                closeButton={false}
-              >
-                <div style={{ 
-                  display: 'flex', 
-                  gap: '12px', 
-                  minWidth: '300px',
-                  maxWidth: '400px'
-                }}>
-                  {/* Left side - Text content */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <strong style={{ fontSize: '14px', display: 'block', marginBottom: '6px' }}>
-                      {property.title}
-                    </strong>
-                    <span style={{ fontSize: '12px', color: '#666', display: 'block', marginBottom: '4px' }}>
-                      {property.address}, {property.city}, {property.state}
-                    </span>
-                    <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#8b7355', display: 'block', marginBottom: '6px' }}>
-                      ${property.price.toLocaleString()}
-                    </span>
-                    <div style={{ fontSize: '12px', color: '#666', marginTop: '4px', paddingTop: '4px', borderTop: '1px solid #e0e0e0' }}>
-                      <span>{property.bedrooms} bed</span> • <span>{property.bathrooms} bath</span> • <span>{property.squareFeet.toLocaleString()} sq ft</span>
-                    </div>
-                    {property.description && (
-                      <p style={{ fontSize: '11px', color: '#888', marginTop: '6px', marginBottom: 0 }}>
-                        {property.description.substring(0, 100)}{property.description.length > 100 ? '...' : ''}
-                      </p>
-                    )}
-                  </div>
-                  
-                  {/* Right side - Property image */}
-                  {property.images && property.images.length > 0 && (
-                    <div style={{ 
-                      width: '120px', 
-                      height: '120px', 
-                      flexShrink: 0,
-                      borderRadius: '6px',
-                      overflow: 'hidden',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                    }}>
-                      <img 
-                        src={property.images[0]} 
-                        alt={property.title}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover'
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-              </Popup>
-            </Marker>
-          );
-        })}
+        {/* Property markers - single popup at a time, closes on mouse leave */}
+        <PropertyMarkers
+          properties={properties}
+          propertyCoordinates={propertyCoordinates}
+          onPropertyClick={onPropertyClick}
+        />
       </MapContainer>
     </div>
   );
