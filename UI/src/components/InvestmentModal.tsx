@@ -331,7 +331,7 @@ export default function InvestmentModal({ open, onClose, property }: InvestmentM
                   variant="overline"
                   sx={{ color: "rgba(0,0,0,0.6)", letterSpacing: "0.12em" }}
                 >
-                  Investment Opportunity
+                  Investment Opportunity At:
                 </Typography>
                 <Typography variant="h5" sx={{ fontWeight: 800, color: "#1a1a1a" }}>
                   {data.address.street}
