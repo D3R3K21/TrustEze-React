@@ -65,7 +65,7 @@ export const propertiesAPI = {
 };
 
 // Drock.io external API for property search
-const DROCK_API_BASE = 'https://api.drock.io/api';
+const DROCK_API_BASE = process.env.REACT_APP_DROCK_API_BASE
 
 export interface DrockSearchParams {
   Keyword?: string;
